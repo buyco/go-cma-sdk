@@ -1,0 +1,898 @@
+openapi: 3.0.1
+info:
+  description: Retrieve tracking data about your cargo using container number, booking
+    number or bill of lading.
+  title: logistic.tracking.v1
+  version: 1.4.1
+servers:
+- url: https://digital-services-apis.cma-cgm.com/logistic/tracking/v1
+security:
+- API Key: []
+paths:
+  /shipments/{shipmentRef}/equipments/moves/commercialCycle:
+    get:
+      description: '<p>This method returns for a commercial cycle an overview of the
+        shipment information, the route and all container moves.&nbsp;<br />the method&nbsp;
+        is composed of the following main groups of data</p> <ul> <li>Shipment: Main
+        Information of the booking or BL such as external reference, voyage, port
+        of loading, port of discharge, etc ..</li> <li>Route: the diff&eacute;rent&nbsp;
+        journey legs&nbsp;</li> <li>Container: main information of the container and
+        its moves.</li> </ul>'
+      operationId: getMoveOnCommercialCycleFromShipment
+      parameters:
+      - description: shipment reference (booking reference or BL number)
+        in: path
+        name: shipmentRef
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Shipment'
+          description: returns for a commercial cycle an overview of the shipment
+            information, the route and all container moves
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fault'
+          description: hereunder fault datatype description </br>  Reason -  404 no
+            result found <br>  Code - REF_ERR Description - reference unknown <br>
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fault'
+          description: hereunder fault datatype description </br>  Reason -  500 Internal
+            error </br>  Code - TRK_ERR Description - Logistic tracking service unavailable'
+            </br>
+      summary: all moves information related to all containers of a shipment
+  /shipments/{shipmentRef}/equipments/{eqpId}/moves/commercialCycle:
+    get:
+      description: '<p>This method returns for a commercial cycle and a container
+        an overview of the shipment information, the route and all container moves.&nbsp;<br
+        />the method&nbsp; is composed of the following main groups of data</p> <ul>
+        <li>Shipment: Main Information of the booking or BL such as external reference,
+        voyage, port of loading, port of discharge, etc ..</li> <li>Route: the diff&eacute;rent&nbsp;
+        journey legs&nbsp;</li> <li>Container: main information of the container and
+        its moves.</li> </ul>'
+      operationId: getMoveOnCommercialCycleFromShipmentAndEquipmentId
+      parameters:
+      - description: shipment reference (booking reference or BL number)
+        in: path
+        name: shipmentRef
+        required: true
+        schema:
+          type: string
+      - description: equipment id (container reference)
+        in: path
+        name: eqpId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Shipment'
+          description: returns for a shipment reference and equipment reference all
+            container moves
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fault'
+          description: hereunder fault datatype description Reason - 404 no result
+            found <br /> Code - REF_ERR Description - reference unknown <br />Code
+            - CTN_ERR Description - container unknown
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fault'
+          description: hereunder fault datatype description </br>  Reason -  500 Internal
+            error </br>  Code - TRK_ERR Description - Logistic tracking service unavailable'
+            </br>
+      summary: all moves information related to a container of a shipment
+  /equipments/{eqpId}/moves/lastCycle:
+    get:
+      description: '<p>This method returns for a container all moves of its last cycle.&nbsp;<br
+        />the method is composed of the following main groups of data</p> <ul> <li>Shipment:
+        Main Information of the booking or BL such as external reference, voyage,
+        port of loading, port of discharge, etc ...</li> <li>Container: main information
+        of the container and its moves.</li> </ul>'
+      operationId: getLastCycleMoveFromEquipment
+      parameters:
+      - description: equipment id (container reference)
+        in: path
+        name: eqpId
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Shipment'
+          description: returns for a container all moves of its last cycle
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fault'
+          description: hereunder fault datatype description Reason - 404 no result
+            found <br /> Code - CTN_ERR Description - container unknown
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fault'
+          description: hereunder fault datatype description </br>  Reason -  500 Internal
+            error </br>  Code - TRK_ERR Description - Logistic tracking service unavailable'
+            </br>
+      summary: all moves information related to a container of its last cycle
+components:
+  schemas:
+    CodeAndName:
+      example:
+        code: code
+        name: name
+      properties:
+        code:
+          type: string
+        name:
+          type: string
+      type: object
+    Vessel:
+      example:
+        code: code
+        name: name
+        imo: imo
+      properties:
+        code:
+          type: string
+        name:
+          type: string
+        imo:
+          type: string
+      type: object
+    Container:
+      example:
+        emptyReturnDepot: emptyReturnDepot
+        size: 1
+        movements:
+        - date: 2000-01-23T04:56:07.000+00:00
+          pointOfDischarge: pointOfDischarge
+          statusOrder: statusOrder
+          pointLocation:
+            code: code
+            name: name
+          portOfOrigin: portOfOrigin
+          shipCompCode: shipCompCode
+          finalPod: finalPod
+          voyageShipCompCode: voyageShipCompCode
+          poolLocation: poolLocation
+          reportedOn: 2000-01-23T04:56:07.000+00:00
+          countryCode: countryCode
+          vessel:
+            code: code
+            name: name
+            imo: imo
+          voyageReference: voyageReference
+          portOfLoading: portOfLoading
+          finalDest: finalDest
+          status:
+            code: code
+            name: name
+        - date: 2000-01-23T04:56:07.000+00:00
+          pointOfDischarge: pointOfDischarge
+          statusOrder: statusOrder
+          pointLocation:
+            code: code
+            name: name
+          portOfOrigin: portOfOrigin
+          shipCompCode: shipCompCode
+          finalPod: finalPod
+          voyageShipCompCode: voyageShipCompCode
+          poolLocation: poolLocation
+          reportedOn: 2000-01-23T04:56:07.000+00:00
+          countryCode: countryCode
+          vessel:
+            code: code
+            name: name
+            imo: imo
+          voyageReference: voyageReference
+          portOfLoading: portOfLoading
+          finalDest: finalDest
+          status:
+            code: code
+            name: name
+        id: id
+        type: type
+      properties:
+        id:
+          description: Container ID
+          type: string
+        size:
+          description: Size in TEU
+          type: integer
+        emptyReturnDepot:
+          description: Empty return depot
+          type: string
+        type:
+          description: type of the container such as ST, ..
+          type: string
+        movements:
+          items:
+            $ref: '#/components/schemas/Movement'
+          type: array
+      type: object
+    Movement:
+      example:
+        date: 2000-01-23T04:56:07.000+00:00
+        pointOfDischarge: pointOfDischarge
+        statusOrder: statusOrder
+        pointLocation:
+          code: code
+          name: name
+        portOfOrigin: portOfOrigin
+        shipCompCode: shipCompCode
+        finalPod: finalPod
+        voyageShipCompCode: voyageShipCompCode
+        poolLocation: poolLocation
+        reportedOn: 2000-01-23T04:56:07.000+00:00
+        countryCode: countryCode
+        vessel:
+          code: code
+          name: name
+          imo: imo
+        voyageReference: voyageReference
+        portOfLoading: portOfLoading
+        finalDest: finalDest
+        status:
+          code: code
+          name: name
+      properties:
+        statusOrder:
+          description: movement display order
+          type: string
+        status:
+          $ref: '#/components/schemas/CodeAndName'
+        date:
+          description: date of the movement
+          format: date-time
+          type: string
+        reportedOn:
+          description: date of move integration
+          format: date-time
+          type: string
+        poolLocation:
+          description: terminal of the movement
+          type: string
+        pointLocation:
+          $ref: '#/components/schemas/CodeAndName'
+        voyageReference:
+          description: Voyage Reference
+          type: string
+        vessel:
+          $ref: '#/components/schemas/Vessel'
+        pointOfDischarge:
+          description: point of discharge
+          type: string
+        portOfOrigin:
+          description: point of origin
+          type: string
+        portOfLoading:
+          description: point of loading
+          type: string
+        finalPod:
+          description: final port of discharge
+          type: string
+        finalDest:
+          description: final point of destination
+          type: string
+        countryCode:
+          description: country code such as FR
+          type: string
+        shipCompCode:
+          description: shipping companies codes are 0001, 0002... provided by CMA
+            CGM referential
+          type: string
+        voyageShipCompCode:
+          description: voyage number
+          type: string
+      type: object
+    Shipment:
+      example:
+        portOfLoadingCountryCode: portOfLoadingCountryCode
+        routes:
+        - containers:
+          - emptyReturnDepot: emptyReturnDepot
+            size: 1
+            movements:
+            - date: 2000-01-23T04:56:07.000+00:00
+              pointOfDischarge: pointOfDischarge
+              statusOrder: statusOrder
+              pointLocation:
+                code: code
+                name: name
+              portOfOrigin: portOfOrigin
+              shipCompCode: shipCompCode
+              finalPod: finalPod
+              voyageShipCompCode: voyageShipCompCode
+              poolLocation: poolLocation
+              reportedOn: 2000-01-23T04:56:07.000+00:00
+              countryCode: countryCode
+              vessel:
+                code: code
+                name: name
+                imo: imo
+              voyageReference: voyageReference
+              portOfLoading: portOfLoading
+              finalDest: finalDest
+              status:
+                code: code
+                name: name
+            - date: 2000-01-23T04:56:07.000+00:00
+              pointOfDischarge: pointOfDischarge
+              statusOrder: statusOrder
+              pointLocation:
+                code: code
+                name: name
+              portOfOrigin: portOfOrigin
+              shipCompCode: shipCompCode
+              finalPod: finalPod
+              voyageShipCompCode: voyageShipCompCode
+              poolLocation: poolLocation
+              reportedOn: 2000-01-23T04:56:07.000+00:00
+              countryCode: countryCode
+              vessel:
+                code: code
+                name: name
+                imo: imo
+              voyageReference: voyageReference
+              portOfLoading: portOfLoading
+              finalDest: finalDest
+              status:
+                code: code
+                name: name
+            id: id
+            type: type
+          - emptyReturnDepot: emptyReturnDepot
+            size: 1
+            movements:
+            - date: 2000-01-23T04:56:07.000+00:00
+              pointOfDischarge: pointOfDischarge
+              statusOrder: statusOrder
+              pointLocation:
+                code: code
+                name: name
+              portOfOrigin: portOfOrigin
+              shipCompCode: shipCompCode
+              finalPod: finalPod
+              voyageShipCompCode: voyageShipCompCode
+              poolLocation: poolLocation
+              reportedOn: 2000-01-23T04:56:07.000+00:00
+              countryCode: countryCode
+              vessel:
+                code: code
+                name: name
+                imo: imo
+              voyageReference: voyageReference
+              portOfLoading: portOfLoading
+              finalDest: finalDest
+              status:
+                code: code
+                name: name
+            - date: 2000-01-23T04:56:07.000+00:00
+              pointOfDischarge: pointOfDischarge
+              statusOrder: statusOrder
+              pointLocation:
+                code: code
+                name: name
+              portOfOrigin: portOfOrigin
+              shipCompCode: shipCompCode
+              finalPod: finalPod
+              voyageShipCompCode: voyageShipCompCode
+              poolLocation: poolLocation
+              reportedOn: 2000-01-23T04:56:07.000+00:00
+              countryCode: countryCode
+              vessel:
+                code: code
+                name: name
+                imo: imo
+              voyageReference: voyageReference
+              portOfLoading: portOfLoading
+              finalDest: finalDest
+              status:
+                code: code
+                name: name
+            id: id
+            type: type
+          journeyLegs:
+          - pointFrom:
+              code: code
+              name: name
+            vesselTo:
+              code: code
+              name: name
+              imo: imo
+            sequenceNumber: 6
+            poolLocationToCode: poolLocationToCode
+            pointTo:
+              code: code
+              name: name
+            dischargeVoyageReference: dischargeVoyageReference
+            vesselFrom:
+              code: code
+              name: name
+              imo: imo
+            poolLocationFromCode: poolLocationFromCode
+            voyageReference: voyageReference
+            shipCompCode: shipCompCode
+            deliveryDate: 2000-01-23T04:56:07.000+00:00
+            collectionDate: 2000-01-23T04:56:07.000+00:00
+          - pointFrom:
+              code: code
+              name: name
+            vesselTo:
+              code: code
+              name: name
+              imo: imo
+            sequenceNumber: 6
+            poolLocationToCode: poolLocationToCode
+            pointTo:
+              code: code
+              name: name
+            dischargeVoyageReference: dischargeVoyageReference
+            vesselFrom:
+              code: code
+              name: name
+              imo: imo
+            poolLocationFromCode: poolLocationFromCode
+            voyageReference: voyageReference
+            shipCompCode: shipCompCode
+            deliveryDate: 2000-01-23T04:56:07.000+00:00
+            collectionDate: 2000-01-23T04:56:07.000+00:00
+        - containers:
+          - emptyReturnDepot: emptyReturnDepot
+            size: 1
+            movements:
+            - date: 2000-01-23T04:56:07.000+00:00
+              pointOfDischarge: pointOfDischarge
+              statusOrder: statusOrder
+              pointLocation:
+                code: code
+                name: name
+              portOfOrigin: portOfOrigin
+              shipCompCode: shipCompCode
+              finalPod: finalPod
+              voyageShipCompCode: voyageShipCompCode
+              poolLocation: poolLocation
+              reportedOn: 2000-01-23T04:56:07.000+00:00
+              countryCode: countryCode
+              vessel:
+                code: code
+                name: name
+                imo: imo
+              voyageReference: voyageReference
+              portOfLoading: portOfLoading
+              finalDest: finalDest
+              status:
+                code: code
+                name: name
+            - date: 2000-01-23T04:56:07.000+00:00
+              pointOfDischarge: pointOfDischarge
+              statusOrder: statusOrder
+              pointLocation:
+                code: code
+                name: name
+              portOfOrigin: portOfOrigin
+              shipCompCode: shipCompCode
+              finalPod: finalPod
+              voyageShipCompCode: voyageShipCompCode
+              poolLocation: poolLocation
+              reportedOn: 2000-01-23T04:56:07.000+00:00
+              countryCode: countryCode
+              vessel:
+                code: code
+                name: name
+                imo: imo
+              voyageReference: voyageReference
+              portOfLoading: portOfLoading
+              finalDest: finalDest
+              status:
+                code: code
+                name: name
+            id: id
+            type: type
+          - emptyReturnDepot: emptyReturnDepot
+            size: 1
+            movements:
+            - date: 2000-01-23T04:56:07.000+00:00
+              pointOfDischarge: pointOfDischarge
+              statusOrder: statusOrder
+              pointLocation:
+                code: code
+                name: name
+              portOfOrigin: portOfOrigin
+              shipCompCode: shipCompCode
+              finalPod: finalPod
+              voyageShipCompCode: voyageShipCompCode
+              poolLocation: poolLocation
+              reportedOn: 2000-01-23T04:56:07.000+00:00
+              countryCode: countryCode
+              vessel:
+                code: code
+                name: name
+                imo: imo
+              voyageReference: voyageReference
+              portOfLoading: portOfLoading
+              finalDest: finalDest
+              status:
+                code: code
+                name: name
+            - date: 2000-01-23T04:56:07.000+00:00
+              pointOfDischarge: pointOfDischarge
+              statusOrder: statusOrder
+              pointLocation:
+                code: code
+                name: name
+              portOfOrigin: portOfOrigin
+              shipCompCode: shipCompCode
+              finalPod: finalPod
+              voyageShipCompCode: voyageShipCompCode
+              poolLocation: poolLocation
+              reportedOn: 2000-01-23T04:56:07.000+00:00
+              countryCode: countryCode
+              vessel:
+                code: code
+                name: name
+                imo: imo
+              voyageReference: voyageReference
+              portOfLoading: portOfLoading
+              finalDest: finalDest
+              status:
+                code: code
+                name: name
+            id: id
+            type: type
+          journeyLegs:
+          - pointFrom:
+              code: code
+              name: name
+            vesselTo:
+              code: code
+              name: name
+              imo: imo
+            sequenceNumber: 6
+            poolLocationToCode: poolLocationToCode
+            pointTo:
+              code: code
+              name: name
+            dischargeVoyageReference: dischargeVoyageReference
+            vesselFrom:
+              code: code
+              name: name
+              imo: imo
+            poolLocationFromCode: poolLocationFromCode
+            voyageReference: voyageReference
+            shipCompCode: shipCompCode
+            deliveryDate: 2000-01-23T04:56:07.000+00:00
+            collectionDate: 2000-01-23T04:56:07.000+00:00
+          - pointFrom:
+              code: code
+              name: name
+            vesselTo:
+              code: code
+              name: name
+              imo: imo
+            sequenceNumber: 6
+            poolLocationToCode: poolLocationToCode
+            pointTo:
+              code: code
+              name: name
+            dischargeVoyageReference: dischargeVoyageReference
+            vesselFrom:
+              code: code
+              name: name
+              imo: imo
+            poolLocationFromCode: poolLocationFromCode
+            voyageReference: voyageReference
+            shipCompCode: shipCompCode
+            deliveryDate: 2000-01-23T04:56:07.000+00:00
+            collectionDate: 2000-01-23T04:56:07.000+00:00
+        nbUnits: 0
+        portOfDischarge:
+          code: code
+          name: name
+        voyageReference: voyageReference
+        portOfLoading:
+          code: code
+          name: name
+        portOfDischargeCountryCode: portOfDischargeCountryCode
+      properties:
+        portOfLoading:
+          $ref: '#/components/schemas/CodeAndName'
+        portOfLoadingCountryCode:
+          description: country code of the port of loading such as FR
+          type: string
+        portOfDischarge:
+          $ref: '#/components/schemas/CodeAndName'
+        portOfDischargeCountryCode:
+          description: country code of the port of discharge such as FR
+          type: string
+        voyageReference:
+          description: Voyage Reference
+          type: string
+        nbUnits:
+          description: Number of units
+          type: integer
+        routes:
+          items:
+            $ref: '#/components/schemas/Route'
+          type: array
+      type: object
+    Fault:
+      properties:
+        reason:
+          description: HTTP error or Free text such as  Database Not Available , Invalid
+            Credential, Mandatory, Invalid Format,  Invalid Length, ForbiddenValue,
+            Invalid Data,...
+          type: string
+        code:
+          description: Error Id,  Server Application error ID, Oracle error Id, ....
+          type: string
+        description:
+          description: Human-readable error description including Data and Value
+          type: string
+      required:
+      - reason
+      type: object
+    JourneyLeg:
+      example:
+        pointFrom:
+          code: code
+          name: name
+        vesselTo:
+          code: code
+          name: name
+          imo: imo
+        sequenceNumber: 6
+        poolLocationToCode: poolLocationToCode
+        pointTo:
+          code: code
+          name: name
+        dischargeVoyageReference: dischargeVoyageReference
+        vesselFrom:
+          code: code
+          name: name
+          imo: imo
+        poolLocationFromCode: poolLocationFromCode
+        voyageReference: voyageReference
+        shipCompCode: shipCompCode
+        deliveryDate: 2000-01-23T04:56:07.000+00:00
+        collectionDate: 2000-01-23T04:56:07.000+00:00
+      properties:
+        sequenceNumber:
+          description: sequence number of the journey leg
+          type: integer
+        pointFrom:
+          $ref: '#/components/schemas/CodeAndName'
+        vesselFrom:
+          $ref: '#/components/schemas/Vessel'
+        vesselTo:
+          $ref: '#/components/schemas/Vessel'
+        pointTo:
+          $ref: '#/components/schemas/CodeAndName'
+        poolLocationFromCode:
+          description: pool code of journey leg departure
+          type: string
+        poolLocationToCode:
+          description: pool code of journey leg arrival
+          type: string
+        collectionDate:
+          description: collection date
+          format: date-time
+          type: string
+        voyageReference:
+          description: voyage reference at the journey leg departure
+          type: string
+        dischargeVoyageReference:
+          description: voyage reference at the journey leg arrival
+          type: string
+        deliveryDate:
+          description: delivery date
+          format: date-time
+          type: string
+        shipCompCode:
+          description: shipping companies codes are 0001, 0002... provided by CMA
+            CGM
+          type: string
+      type: object
+    Route:
+      example:
+        containers:
+        - emptyReturnDepot: emptyReturnDepot
+          size: 1
+          movements:
+          - date: 2000-01-23T04:56:07.000+00:00
+            pointOfDischarge: pointOfDischarge
+            statusOrder: statusOrder
+            pointLocation:
+              code: code
+              name: name
+            portOfOrigin: portOfOrigin
+            shipCompCode: shipCompCode
+            finalPod: finalPod
+            voyageShipCompCode: voyageShipCompCode
+            poolLocation: poolLocation
+            reportedOn: 2000-01-23T04:56:07.000+00:00
+            countryCode: countryCode
+            vessel:
+              code: code
+              name: name
+              imo: imo
+            voyageReference: voyageReference
+            portOfLoading: portOfLoading
+            finalDest: finalDest
+            status:
+              code: code
+              name: name
+          - date: 2000-01-23T04:56:07.000+00:00
+            pointOfDischarge: pointOfDischarge
+            statusOrder: statusOrder
+            pointLocation:
+              code: code
+              name: name
+            portOfOrigin: portOfOrigin
+            shipCompCode: shipCompCode
+            finalPod: finalPod
+            voyageShipCompCode: voyageShipCompCode
+            poolLocation: poolLocation
+            reportedOn: 2000-01-23T04:56:07.000+00:00
+            countryCode: countryCode
+            vessel:
+              code: code
+              name: name
+              imo: imo
+            voyageReference: voyageReference
+            portOfLoading: portOfLoading
+            finalDest: finalDest
+            status:
+              code: code
+              name: name
+          id: id
+          type: type
+        - emptyReturnDepot: emptyReturnDepot
+          size: 1
+          movements:
+          - date: 2000-01-23T04:56:07.000+00:00
+            pointOfDischarge: pointOfDischarge
+            statusOrder: statusOrder
+            pointLocation:
+              code: code
+              name: name
+            portOfOrigin: portOfOrigin
+            shipCompCode: shipCompCode
+            finalPod: finalPod
+            voyageShipCompCode: voyageShipCompCode
+            poolLocation: poolLocation
+            reportedOn: 2000-01-23T04:56:07.000+00:00
+            countryCode: countryCode
+            vessel:
+              code: code
+              name: name
+              imo: imo
+            voyageReference: voyageReference
+            portOfLoading: portOfLoading
+            finalDest: finalDest
+            status:
+              code: code
+              name: name
+          - date: 2000-01-23T04:56:07.000+00:00
+            pointOfDischarge: pointOfDischarge
+            statusOrder: statusOrder
+            pointLocation:
+              code: code
+              name: name
+            portOfOrigin: portOfOrigin
+            shipCompCode: shipCompCode
+            finalPod: finalPod
+            voyageShipCompCode: voyageShipCompCode
+            poolLocation: poolLocation
+            reportedOn: 2000-01-23T04:56:07.000+00:00
+            countryCode: countryCode
+            vessel:
+              code: code
+              name: name
+              imo: imo
+            voyageReference: voyageReference
+            portOfLoading: portOfLoading
+            finalDest: finalDest
+            status:
+              code: code
+              name: name
+          id: id
+          type: type
+        journeyLegs:
+        - pointFrom:
+            code: code
+            name: name
+          vesselTo:
+            code: code
+            name: name
+            imo: imo
+          sequenceNumber: 6
+          poolLocationToCode: poolLocationToCode
+          pointTo:
+            code: code
+            name: name
+          dischargeVoyageReference: dischargeVoyageReference
+          vesselFrom:
+            code: code
+            name: name
+            imo: imo
+          poolLocationFromCode: poolLocationFromCode
+          voyageReference: voyageReference
+          shipCompCode: shipCompCode
+          deliveryDate: 2000-01-23T04:56:07.000+00:00
+          collectionDate: 2000-01-23T04:56:07.000+00:00
+        - pointFrom:
+            code: code
+            name: name
+          vesselTo:
+            code: code
+            name: name
+            imo: imo
+          sequenceNumber: 6
+          poolLocationToCode: poolLocationToCode
+          pointTo:
+            code: code
+            name: name
+          dischargeVoyageReference: dischargeVoyageReference
+          vesselFrom:
+            code: code
+            name: name
+            imo: imo
+          poolLocationFromCode: poolLocationFromCode
+          voyageReference: voyageReference
+          shipCompCode: shipCompCode
+          deliveryDate: 2000-01-23T04:56:07.000+00:00
+          collectionDate: 2000-01-23T04:56:07.000+00:00
+      properties:
+        journeyLegs:
+          items:
+            $ref: '#/components/schemas/JourneyLeg'
+          type: array
+        containers:
+          items:
+            $ref: '#/components/schemas/Container'
+          type: array
+      type: object
+  securitySchemes:
+    API Key:
+      description: API Key
+      in: header
+      name: KeyId
+      type: apiKey
+x-axway:
+  corsEnabled: true
+  basePaths:
+  - ""
+  - ""
+  - ""
+  serviceType: rest
+  deprecated: false
+  tags: {}
+  availableSDK:
+    ios-swift: /discovery/sdk/88381eed-8e6f-4293-ac82-e7c43379825a/ios-swift
+    titanium: /discovery/sdk/88381eed-8e6f-4293-ac82-e7c43379825a/titanium
+    android: /discovery/sdk/88381eed-8e6f-4293-ac82-e7c43379825a/android
+    nodejs: /discovery/sdk/88381eed-8e6f-4293-ac82-e7c43379825a/nodejs
+x-original-swagger-version: "2.0"
