@@ -1,898 +1,1635 @@
-openapi: 3.0.1
+openapi: 3.0.3
 info:
-  description: Retrieve tracking data about your cargo using container number, booking
-    number or bill of lading.
-  title: logistic.tracking.v1
-  version: 1.4.1
+  contact:
+    email: ho.support-api@cma-cgm.com
+    name: CMA CGM API Technical support
+    url: https://api-portal.cma-cgm.com/
+  description: "Managing and sending Shipment-, Transport- and Equipment-events and\
+    \ subscriptions for Track &amp; Trace (T&amp;T). API specification issued by DCSA.org.\n\
+    For explanation to specific values or objects please refer to the <a href='https://dcsa.org/wp-content/uploads/2021/10/202108_DCSA_P1_Information-Model-v3.3_TNT22_Final.pdf'>Information\
+    \ Model v3.3</a>\nPolling can be done on the <b>GET /events</b> endPoint. DCSA\
+    \ version 2.2.0"
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: Logistic Tracking service API - DCSA OpenAPI specification for Track & Trace
+    v2.2.0
+  version: 1.0.3
 servers:
-- url: https://digital-services-apis.cma-cgm.com/logistic/tracking/v1
-security:
-- API Key: []
+- description: CMA CGM Gateway PROD API
+  url: https://apis.cma-cgm.net/operation/trackandtrace/v1
+- description: CMA CGM Gateway PreProd API
+  url: https://apis-pre.cma-cgm.net/operation/trackandtrace/v1
+- description: CMA CGM Gateway UAT
+  url: https://apis-uat.cma-cgm.net/operation/trackandtrace/v1
+tags:
+- description: Event operations - Public track and trace methods of a commercial cycle
+  name: Events
 paths:
-  /shipments/{shipmentRef}/equipments/moves/commercialCycle:
+  /events:
     get:
-      description: '<p>This method returns for a commercial cycle an overview of the
-        shipment information, the route and all container moves.&nbsp;<br />the method&nbsp;
-        is composed of the following main groups of data</p> <ul> <li>Shipment: Main
-        Information of the booking or BL such as external reference, voyage, port
-        of loading, port of discharge, etc ..</li> <li>Route: the diff&eacute;rent&nbsp;
-        journey legs&nbsp;</li> <li>Container: main information of the container and
-        its moves.</li> </ul>'
-      operationId: getMoveOnCommercialCycleFromShipment
+      description: |-
+        Returns all events filtered by the queryParameters.
+        <b>NB</b>&#58; It is possible to combine queryParameters. When combining queryParameters be aware that it is also possible to make combinations that are mutual contradicting.
+        Example&#58; <i>shipmentEventTypeCode=DRFT and equipmentEventTypeCode=GTIN</i>
+        Since there is no event that can be a ShipmentEvent <u>and</u> an EquipmentEvent at the same time <b>this will return an empty list</b>!
+        <b>Follow DCSA TNT 2.2.0 specifications</b>
+      operationId: searchMoveOnCommercialCycle
       parameters:
-      - description: shipment reference (booking reference or BL number)
-        in: path
-        name: shipmentRef
-        required: true
+      - description: "The type of event(s) to filter by. Possible values are\n- SHIPMENT\
+          \ (Shipment events) - TRANSPORT (Transport events) - EQUIPMENT (Equipment\
+          \ events)\nIt is possible to select multiple values by comma (,) separating\
+          \ them. For multiple values the OR-operator is used. For example eventType=SHIPMENT,EQUIPMENT\
+          \ matches both Shipment- and Equipment-events.\nDefault value is all event\
+          \ types."
+        explode: false
+        in: query
+        name: eventType
+        required: false
+        schema:
+          items:
+            enum:
+            - SHIPMENT
+            - TRANSPORT
+            - EQUIPMENT
+            type: string
+          type: array
+        style: form
+      - description: "The status of the document in the process to filter by. Possible\
+          \ values are - RECE (Received) - DRFT (Drafted) - PENA (Pending Approval)\
+          \ - PENU (Pending Update) - REJE (Rejected) - APPR (Approved) - ISSU (Issued)\
+          \ - SURR (Surrendered) - SUBM (Submitted) - VOID (Void) - CONF (Confirmed)\
+          \ - REQS (Requested) - CMPL (Completed) - HOLD (On Hold) - RELS (Released)\n\
+          It is possible to select multiple values by comma (,) separating them. For\
+          \ multiple values the OR-operator is used. For example <i>shipmentEventTypeCode=RECE,DRFT</i>\
+          \  Matches <b>both</b> Received (RECE) and Drafted (DRFT) shipment events.\n\
+          Default is all shipmentEventTypeCodes.\nThis filter is only relevant when\
+          \ filtering on ShipmentEvents"
+        example: "RECE,DRFT"
+        explode: false
+        in: query
+        name: shipmentEventTypeCode
+        required: false
+        schema:
+          default:
+          - RECE
+          - DRFT
+          - PENA
+          - PENU
+          - REJE
+          - APPR
+          - ISSU
+          - SURR
+          - SUBM
+          - VOID
+          - CONF
+          - REQS
+          - CMPL
+          - HOLD
+          - RELS
+          items:
+            $ref: '#/components/schemas/shipmentEventTypeCode'
+          type: array
+        style: form
+      - description: "The documentTypeCode to filter by. Possible values are - CBR\
+          \ (Carrier Booking Request Reference) - BKG (Booking) - SHI (Shipping Instruction)\
+          \ - SRM (Shipment Release Message) - TRD (Transport Document) - ARN (Arrival\
+          \ Notice) - VGM (Verified Gross Mass) - CAS (Cargo Survey) - CUS (Customs\
+          \ Inspection) - DGD (Dangerous Goods Declaration) - OOG (Out of Gauge)\n\
+          It is possible to select multiple values by comma (,) separating them. For\
+          \ multiple values the OR-operator is used. For example <i>documentTypeCode=SHI,TRD</i>\
+          \ Matches <b>both</b> ShippingInstruction (SHI) and TransportDocument (TRD)\
+          \ shipment events.\nDefault is all documentTypeCodes.\nThis filter is only\
+          \ relevant when filtering on ShipmentEvents"
+        example: "SHI,TRD"
+        explode: false
+        in: query
+        name: documentTypeCode
+        required: false
+        schema:
+          default:
+          - CBR
+          - BKG
+          - SHI
+          - SRM
+          - TRD
+          - ARN
+          - VGM
+          - CAS
+          - CUS
+          - DGD
+          - OOG
+          items:
+            $ref: '#/components/schemas/documentTypeCode'
+          type: array
+        style: form
+      - description: |-
+          A set of unique characters provided by carrier to identify a booking.
+          Specifying this filter will only return events related to this particular carrierBookingReference.
+        explode: true
+        in: query
+        name: carrierBookingReference
+        required: false
+        schema:
+          $ref: '#/components/schemas/carrierBookingReference'
+        style: form
+      - description: |-
+          A unique number reference allocated by the shipping line to the transport document and the main number used for the tracking of the status of the shipment.
+          Specifying this filter will only return events related to this particular transportDocumentReference
+        explode: true
+        in: query
+        name: transportDocumentReference
+        required: false
+        schema:
+          $ref: '#/components/schemas/transportDocumentReference'
+        style: form
+      - description: "Identifier for type of Transport event to filter by - ARRI (Arrived)\
+          \ - DEPA (Departed)\nIt is possible to select multiple values by comma (,)\
+          \ separating them. For multiple values the OR-operator is used. For example\
+          \ <i>transportEventTypeCode=ARRI,DEPA</i> matches <b>both</b> Arrived (ARRI)\
+          \ and Departed (DEPA) transport events.\nDefault is all transportEventTypeCodes.\n\
+          This filter is only relevant when filtering on TransportEvents"
+        example: "ARRI,DEPA"
+        explode: false
+        in: query
+        name: transportEventTypeCode
+        required: false
+        schema:
+          default:
+          - ARRI
+          - DEPA
+          items:
+            $ref: '#/components/schemas/transportEventTypeCode'
+          type: array
+        style: form
+      - description: "ID uniquely identifying a transport call, to filter events by.\n\
+          Specifying this filter will only return events related to this particular\
+          \ transportCallID"
+        explode: true
+        in: query
+        name: transportCallID
+        required: false
+        schema:
+          $ref: '#/components/schemas/transportCallID'
+        style: form
+      - description: "The identifier of vessel for which schedule details are published.\
+          \ Depending on schedule type, this may not be available yet.\nSpecifying\
+          \ this filter will only return events related to this particular vesselIMONumber."
+        explode: true
+        in: query
+        name: vesselIMONumber
+        required: false
+        schema:
+          $ref: '#/components/schemas/vesselIMONumber'
+        style: form
+      - description: |-
+          Filter on the vessel operator-specific identifier of the export Voyage.
+          Specifying this filter will only return events related to this particular exportVoyageNumber.
+        explode: true
+        in: query
+        name: exportVoyageNumber
+        required: false
+        schema:
+          $ref: '#/components/schemas/exportVoyageNumber'
+        style: form
+      - description: |-
+          Filter on the carrier specific identifier of the service.
+          Specifying this filter will only return events related to this particular carrierServiceCode.
+        explode: true
+        in: query
+        name: carrierServiceCode
+        required: false
+        schema:
+          $ref: '#/components/schemas/carrierServiceCode'
+        style: form
+      - description: |-
+          The UN Location code specifying where the place is located.
+          Specifying this filter will only return events related to this particular UN Location code.
+        explode: true
+        in: query
+        name: UNLocationCode
+        required: false
+        schema:
+          $ref: '#/components/schemas/UNLocationCode'
+        style: form
+      - description: "Unique identifier for equipmentEventTypeCode. - LOAD (Loaded)\
+          \ - DISC (Discharged) - GTIN (Gated in) - GTOT (Gated out) - STUF (Stuffed)\
+          \ - STRP (Stripped) - PICK (Pick-up) - DROP (Drop-off) - INSP (Inspected)\
+          \ - RSEA (Resealed) - RMVD (Removed)\nIt is possible to select multiple\
+          \ values by comma (,) separating them. For multiple values the OR-operator\
+          \ is used. For example <i>equipmentEventTypeCode=GTIN,GTOT</i> matches <b>both</b>\
+          \ Gated in (GTIN) and Gated out (GTOT) equipment events.\nDefault is all\
+          \ equipmentEventTypeCodes.\nThis filter is only relevant when filtering\
+          \ on EquipmentEvents"
+        example: "GTIN,GTOT"
+        explode: false
+        in: query
+        name: equipmentEventTypeCode
+        required: false
+        schema:
+          default:
+          - LOAD
+          - DISC
+          - GTIN
+          - GTOT
+          - STUF
+          - STRP
+          - PICK
+          - DROP
+          - INSP
+          - RSEA
+          - RMVD
+          items:
+            $ref: '#/components/schemas/equipmentEventTypeCode'
+          type: array
+        style: form
+      - description: "Will filter by the unique identifier for the equipment, which\
+          \ should follow the BIC ISO Container Identification Number where possible.\n\
+          Specifying this filter will only return events related to this particular\
+          \ equipmentReference"
+        explode: true
+        in: query
+        name: equipmentReference
+        required: false
+        schema:
+          $ref: '#/components/schemas/equipmentReference'
+        style: form
+      - description: "Limit the result based on the creating date of the event. It\
+          \ is possible to use operators on this query parameter. This is done by\
+          \ adding a colon followed by an operator at the end of the queryParameterName\
+          \ (before the =)\n<i>eventCreatedDateTime<b>&#58;gte</b>=2021-04-01T14&#58;12&#58;56+01&#58;00</i>\n\
+          would result in all events created &#8805; 2021-04-01T14&#58;12&#58;56+01&#58;00\n\
+          The following operators are supported - &#58;gte (&#8805; Greater than or\
+          \ equal) - &#58;gt (&#62; Greater than) - &#58;lte (&#8804; Less than or\
+          \ equal) - &#58;lt (&#60; Less than) - &#58;eq (&#61; Equal to)\nIf no operator\
+          \ is provided, a <b>strictly equal</b> is used (this is equivalent to <b>&#58;eq</b>\
+          \ operator)."
+        example: 2021-04-01T14:12:56+01:00
+        explode: true
+        in: query
+        name: eventCreatedDateTime
+        required: false
+        schema:
+          $ref: '#/components/schemas/eventCreatedDateTime'
+        style: form
+      - description: (Mandatory if you are a Third Party). This field specifies the
+          end customer code you request a rate for. Use our referential API Partner
+          to check if the end customer exists and to get its Partner ID code -- Not
+          a standard DCSA attribute
+        example: "00002334567"
+        explode: true
+        in: query
+        name: behalfOf
+        required: false
         schema:
           type: string
+        style: form
       responses:
         "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Shipment'
-          description: returns for a commercial cycle an overview of the shipment
-            information, the route and all container moves
-        "404":
+                items:
+                  $ref: '#/components/schemas/searchMoveOnCommercialCycle_200_response_inner'
+                type: array
+          description: Successful operation
+          headers:
+            API-Version:
+              $ref: '#/components/headers/API-Version'
+        default:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Fault'
-          description: hereunder fault datatype description </br>  Reason -  404 no
-            result found <br>  Code - REF_ERR Description - reference unknown <br>
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Fault'
-          description: hereunder fault datatype description </br>  Reason -  500 Internal
-            error </br>  Code - TRK_ERR Description - Logistic tracking service unavailable'
-            </br>
-      summary: all moves information related to all containers of a shipment
-  /shipments/{shipmentRef}/equipments/{eqpId}/moves/commercialCycle:
+                $ref: '#/components/schemas/inline_response_default'
+          description: Unexpected error
+          headers:
+            API-Version:
+              $ref: '#/components/headers/API-Version'
+      security:
+      - oAuth2:
+        - tandt:read:be
+        - tandtcommercial:read:be
+        - tandtpublic:read:be
+        - tandt:read:fe
+        - tandtcommercial:read:fe
+        - tandtpublic:read:fe
+      - ApiKeyAuth: []
+      summary: Find Commercial events.
+      tags:
+      - Events
+  /events/{trackingReference}:
     get:
-      description: '<p>This method returns for a commercial cycle and a container
-        an overview of the shipment information, the route and all container moves.&nbsp;<br
-        />the method&nbsp; is composed of the following main groups of data</p> <ul>
-        <li>Shipment: Main Information of the booking or BL such as external reference,
-        voyage, port of loading, port of discharge, etc ..</li> <li>Route: the diff&eacute;rent&nbsp;
-        journey legs&nbsp;</li> <li>Container: main information of the container and
-        its moves.</li> </ul>'
-      operationId: getMoveOnCommercialCycleFromShipmentAndEquipmentId
+      description: |-
+        Return commercial cycle belonging to provided tracking reference
+        <b>Query is not DCSA compliant but Return data follow DCSA TNT 2.2.0 specifications</b>
+      operationId: getMoveOnCommercialCycle
       parameters:
-      - description: shipment reference (booking reference or BL number)
+      - description: Shipment reference or Equipment identifier
+        explode: false
         in: path
-        name: shipmentRef
+        name: trackingReference
         required: true
         schema:
           type: string
-      - description: equipment id (container reference)
-        in: path
-        name: eqpId
-        required: true
+        style: simple
+      - description: (Mandatory if you are a Third Party). This field specifies the
+          end customer code you request a rate for. Use our referential API Partner
+          to check if the end customer exists and to get its Partner ID code
+        example: "00002334567"
+        explode: true
+        in: query
+        name: behalfOf
+        required: false
         schema:
           type: string
+        style: form
       responses:
         "200":
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Shipment'
-          description: returns for a shipment reference and equipment reference all
-            container moves
-        "404":
+                items:
+                  $ref: '#/components/schemas/searchMoveOnCommercialCycle_200_response_inner'
+                type: array
+          description: Successful operation
+          headers:
+            API-Version:
+              $ref: '#/components/headers/API-Version'
+        default:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Fault'
-          description: hereunder fault datatype description Reason - 404 no result
-            found <br /> Code - REF_ERR Description - reference unknown <br />Code
-            - CTN_ERR Description - container unknown
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Fault'
-          description: hereunder fault datatype description </br>  Reason -  500 Internal
-            error </br>  Code - TRK_ERR Description - Logistic tracking service unavailable'
-            </br>
-      summary: all moves information related to a container of a shipment
-  /equipments/{eqpId}/moves/lastCycle:
-    get:
-      description: '<p>This method returns for a container all moves of its last cycle.&nbsp;<br
-        />the method is composed of the following main groups of data</p> <ul> <li>Shipment:
-        Main Information of the booking or BL such as external reference, voyage,
-        port of loading, port of discharge, etc ...</li> <li>Container: main information
-        of the container and its moves.</li> </ul>'
-      operationId: getLastCycleMoveFromEquipment
-      parameters:
-      - description: equipment id (container reference)
-        in: path
-        name: eqpId
-        required: true
-        schema:
-          type: string
-      responses:
-        "200":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Shipment'
-          description: returns for a container all moves of its last cycle
-        "404":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Fault'
-          description: hereunder fault datatype description Reason - 404 no result
-            found <br /> Code - CTN_ERR Description - container unknown
-        "500":
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Fault'
-          description: hereunder fault datatype description </br>  Reason -  500 Internal
-            error </br>  Code - TRK_ERR Description - Logistic tracking service unavailable'
-            </br>
-      summary: all moves information related to a container of its last cycle
+                $ref: '#/components/schemas/inline_response_default'
+          description: Unexpected error
+          headers:
+            API-Version:
+              $ref: '#/components/headers/API-Version'
+      security:
+      - oAuth2:
+        - tandt:read:be
+        - tandtcommercial:read:be
+        - tandtpublic:read:be
+        - tandt:read:fe
+        - tandtcommercial:read:fe
+        - tandtpublic:read:fe
+      - ApiKeyAuth: []
+      summary: Find Commercial events from unique tracking greference.
+      tags:
+      - Events
 components:
+  headers:
+    API-Version:
+      description: SemVer used to indicate the version of the contract (API version)
+        returned.
+      explode: false
+      schema:
+        example: 2.2.0
+        type: string
+      style: simple
   schemas:
-    CodeAndName:
-      example:
-        code: code
-        name: name
-      properties:
-        code:
-          type: string
-        name:
-          type: string
+    carrierBookingReference:
+      description: A set of unique characters provided by carrier to identify a booking.
+      example: ABC709951
+      maxLength: 35
+      type: string
+    transportDocumentReference:
+      description: A unique number allocated by the shipping line to the transport
+        document and the main number used for the tracking of the status of the shipment.
+      maxLength: 20
+      type: string
+    transportCallID:
+      description: The unique identifier for a transport call
+      example: 123e4567-e89b-12d3-a456-426614174000
+      maxLength: 100
+      type: string
+    vesselIMONumber:
+      description: "The unique reference for a registered Vessel. The reference is\
+        \ the International Maritime Organisation (IMO) number, also sometimes known\
+        \ as the Lloyd&apos;s register code, which does not change during the lifetime\
+        \ of the vessel"
+      example: "9321483"
+      maxLength: 7
+      type: string
+    carrierVoyageNumber:
+      description: The vessel operator-specific identifier of the Voyage.
+      example: 2103S
+      maxLength: 50
+      type: string
+    exportVoyageNumber:
+      description: The vessel operator-specific identifier of the export Voyage.
+      example: 2103S
+      maxLength: 50
+      type: string
+    carrierServiceCode:
+      description: The code of the service for which the schedule details are published.
+      example: FE1
+      maxLength: 5
+      type: string
+    UNLocationCode:
+      description: The UN Location code specifying where the place is located.
+      example: FRPAR
+      maxLength: 5
+      type: string
+    equipmentReference:
+      description: "The unique identifier for the equipment, which should follow the\
+        \ BIC ISO Container Identification Number where possible. According to ISO\
+        \ 6346, a container identification code consists of a 4-letter prefix and\
+        \ a 7-digit number (composed of a 3-letter owner code, a category identifier,\
+        \ a serial number, and a check-digit). If a container does not comply with\
+        \ ISO 6346, it is suggested to follow Recommendation"
+      example: APZU4812090
+      maxLength: 15
+      type: string
+    eventCreatedDateTime:
+      description: |-
+        The timestamp of when the event was created.
+        <b>NB</b>&#58; This field should be considered Metadata
+      example: 2021-01-09T14:12:56+01:00
+      format: date-time
+      type: string
+    transportEvent:
+      allOf:
+      - $ref: '#/components/schemas/operationsTransportEvent'
+      - $ref: '#/components/schemas/transportEvent_allOf'
+      - $ref: '#/components/schemas/references'
       type: object
-    Vessel:
-      example:
-        code: code
-        name: name
-        imo: imo
-      properties:
-        code:
-          type: string
-        name:
-          type: string
-        imo:
-          type: string
+    operationsTransportEvent:
+      allOf:
+      - $ref: '#/components/schemas/baseEvent'
+      - $ref: '#/components/schemas/baseTransportEvent'
       type: object
-    Container:
+    baseEvent:
+      allOf:
+      - $ref: '#/components/schemas/baseEvent_allOf'
+      - $ref: '#/components/schemas/baseEvent_allOf_1'
+      - $ref: '#/components/schemas/baseEventBody'
+      required:
+      - eventCreatedDateTime
+      type: object
+    eventID:
+      description: |-
+        The unique identifier for the event (the message - not the source).
+        <b>NB</b>&#58; This field should be considered Metadata
+      example: 84db923d-2a19-4eb0-beb5-446c1ec57d34
+      format: uuid
+      type: string
+    baseEventBody:
+      allOf:
+      - $ref: '#/components/schemas/baseEventBody_allOf'
+      - $ref: '#/components/schemas/baseEventBody_allOf_1'
+      - $ref: '#/components/schemas/baseEventBody_allOf_2'
+      - $ref: '#/components/schemas/baseEventBody_allOf_3'
+      description: The Event entity is described as a generalization of all the specific
+        event categories. An event always takes place in relation to a shipment and
+        can additionally be linked to a transport or an equipment
+      required:
+      - eventClassifierCode
+      - eventDateTime
+      - eventType
+      type: object
+    eventType:
+      description: |-
+        The Event Type of the object - to be used as a discriminator.
+        <b>NB</b>&#58; This field should be considered Metadata
+      type: string
+    eventClassifierCode:
+      description: Code for the event classifier. Values can vary depending on eventType
+      type: string
+    eventDateTime:
+      description: "The local date and time, where the event took place or when the\
+        \ event will take place, in ISO 8601 format."
+      example: 2019-11-12T07:41:00+08:30
+      format: date-time
+      type: string
+    baseTransportEvent:
+      allOf:
+      - $ref: '#/components/schemas/baseTransportEvent_allOf'
+      - $ref: '#/components/schemas/baseTransportEvent_allOf_1'
+      - $ref: '#/components/schemas/baseTransportEvent_allOf_2'
+      - $ref: '#/components/schemas/baseTransportEvent_allOf_3'
+      - $ref: '#/components/schemas/baseTransportEvent_allOf_4'
+      - $ref: '#/components/schemas/baseTransportEvent_allOf_5'
+      description: The transport event entity is a specialization of the event entity
+        to support specification of data that only applies to a transport event.
+      required:
+      - transportCall
+      - transportEventTypeCode
+      type: object
+    transportEventTypeCode:
+      description: |-
+        Identifier for type of Transport event - ARRI (Arrived) - DEPA (Departed)
+        More details can be found on <a href="https://github.com/dcsaorg/DCSA-Information-Model/blob/master/datamodel/referencedata.d/transporteventtypecodes.csv">GitHub</a>
+      enum:
+      - ARRI
+      - DEPA
+      example: ARRI
+      type: string
+    delayReasonCode:
+      description: Reason code for the delay. The SMDG-Delay-Reason-Codes are used
+        for this attribute. The code list can be found at http://www.smdg.org/smdg-code-lists/
+      example: WEA
+      maxLength: 3
+      type: string
+    changeRemark:
+      description: Free text information provided by the vessel operator regarding
+        the reasons for the change in schedule and/or plans to mitigate schedule slippage.
+      example: Bad weather
+      maxLength: 250
+      type: string
+    transportCall:
+      allOf:
+      - $ref: '#/components/schemas/transportCall_allOf'
+      - $ref: '#/components/schemas/transportCall_allOf_1'
+      - $ref: '#/components/schemas/transportCall_allOf_2'
+      - $ref: '#/components/schemas/transportCall_allOf_3'
+      - $ref: '#/components/schemas/transportCall_allOf_4'
+      - $ref: '#/components/schemas/transportCall_allOf_5'
+      - $ref: '#/components/schemas/transportCall_allOf_6'
+      - $ref: '#/components/schemas/transportCall_allOf_7'
+      - $ref: '#/components/schemas/transportCall_allOf_8'
+      - $ref: '#/components/schemas/transportCall_allOf_9'
+      - $ref: '#/components/schemas/transportCall_allOf_10'
+      - $ref: '#/components/schemas/transportCall_allOf_11'
+      - $ref: '#/components/schemas/transportCall_allOf_12'
+      - $ref: '#/components/schemas/transportCall_allOf_13'
+      - $ref: '#/components/schemas/transportCall_allOf_14'
+      required:
+      - modeOfTransport
+      - transportCallID
+      type: object
+    importVoyageNumber:
+      description: The vessel operator-specific identifier of the import Voyage.
+      example: 2103N
+      maxLength: 50
+      type: string
+    transportCallSequenceNumber:
+      description: Transport operator&apos;s key that uniquely identifies each individual
+        call. This key is essential to distinguish between two separate calls at the
+        same location within one voyage.
+      example: 2
+      type: integer
+    facilityCode:
+      description: The code used for identifying the specific facility. This code
+        does <b>not</b> include the UN Location Code.
+      example: ADT
+      maxLength: 6
+      nullable: false
+      type: string
+    facilityCodeListProvider:
+      description: The provider used for identifying the facility Code
+      enum:
+      - BIC
+      - SMDG
+      example: SMDG
+      type: string
+    facilityTypeCodeTRN:
+      description: A specialized version of the facilityCode to be used in TransportCalls.
+        The code to identify the specific type of facility. - BOCR (Border crossing)
+        - CLOC (Customer location) - COFS (Container freight station) - COYA (Deprecated
+        - use OFFD intead) - OFFD (Off dock storage) - DEPO (Depot) - INTE (Inland
+        terminal) - POTE (Port terminal) - RAMP (Ramp)
+      enum:
+      - BOCR
+      - CLOC
+      - COFS
+      - COYA
+      - OFFD
+      - DEPO
+      - INTE
+      - POTE
+      - RAMP
+      example: POTE
+      type: string
+    otherFacility:
+      description: An alternative way to capture the facility when no standardized
+        DCSA facility code can be found.
+      example: Depot location or address
+      maxLength: 50
+      type: string
+    modeOfTransport:
+      description: The mode of transport as defined by DCSA.
+      enum:
+      - VESSEL
+      - RAIL
+      - TRUCK
+      - BARGE
+      type: string
+    location:
+      allOf:
+      - $ref: '#/components/schemas/location_allOf'
+      - $ref: '#/components/schemas/location_allOf_1'
+      - $ref: '#/components/schemas/location_allOf_2'
+      - $ref: '#/components/schemas/transportCall_allOf_7'
+      - $ref: '#/components/schemas/location_allOf_3'
+      description: "generally used to capture location-related data, also for locations\
+        \ without UN Location Codes."
+      type: object
+    locationName:
+      description: The name of the location.
+      example: Eiffel Tower
+      maxLength: 100
+      type: string
+    latitude:
+      description: Geographic coordinate that specifies the north–south position of
+        a point on the Earth&apos;s surface.
+      example: "48.8585500"
+      maxLength: 10
+      type: string
+    longitude:
+      description: Geographic coordinate that specifies the east–west position of
+        a point on the Earth&apos;s surface.
+      example: "2.294492036"
+      maxLength: 11
+      type: string
+    address:
+      allOf:
+      - $ref: '#/components/schemas/address_allOf'
+      - $ref: '#/components/schemas/address_allOf_1'
+      - $ref: '#/components/schemas/address_allOf_2'
+      - $ref: '#/components/schemas/address_allOf_3'
+      - $ref: '#/components/schemas/address_allOf_4'
+      - $ref: '#/components/schemas/address_allOf_5'
+      - $ref: '#/components/schemas/address_allOf_6'
+      - $ref: '#/components/schemas/address_allOf_7'
+      description: An object for storing address related information
+      type: object
+    addressName:
+      description: Name of the address
+      example: Henrik
+      maxLength: 100
+      type: string
+    streetName:
+      description: The name of the street of the party’s address.
+      example: Kronprincessegade
+      maxLength: 100
+      type: string
+    streetNumber:
+      description: The number of the street of the party’s address.
+      example: "54"
+      maxLength: 50
+      type: string
+    floor:
+      description: The floor of the party’s street number.
+      example: 5. sal
+      maxLength: 50
+      type: string
+    postCode:
+      description: The post code of the party’s address.
+      example: "1306"
+      maxLength: 10
+      type: string
+    cityName:
+      description: The city name of the party’s address.
+      example: København
+      maxLength: 65
+      type: string
+    stateRegion:
+      description: The state/region of the party’s address.
+      example: N/A
+      maxLength: 65
+      type: string
+    country:
+      description: The country of the party’s address.
+      example: Denmark
+      maxLength: 75
+      type: string
+    vessel:
+      allOf:
+      - $ref: '#/components/schemas/vessel_allOf'
+      - $ref: '#/components/schemas/vessel_allOf_1'
+      - $ref: '#/components/schemas/vessel_allOf_2'
+      - $ref: '#/components/schemas/vessel_allOf_3'
+      - $ref: '#/components/schemas/vessel_allOf_4'
+      - $ref: '#/components/schemas/vessel_allOf_5'
+      description: "describes a floating, sea going structure (mother vessels and\
+        \ feeder vessels) with either an internal or external mode of propulsion designed\
+        \ for the transport of cargo and/or passengers. Ocean vessels are uniquely\
+        \ identified by an IMO number consisting of 7 digits, or alternatively by\
+        \ their AIS signal with an MMSI number. "
+      required:
+      - vesselIMONumber
+      type: object
+    vesselName:
+      description: The name of the Vessel given by the Vessel Operator and registered
+        with IMO.
+      example: King of the Seas
+      maxLength: 35
+      type: string
+    vesselFlag:
+      description: The flag of the nation whose laws the vessel is registered under.
+        This is the ISO 3166 two-letter country code
+      example: DE
+      maxLength: 2
+      type: string
+    vesselCallSignNumber:
+      description: "A unique alphanumeric identity that belongs to the vessel and\
+        \ is assigned by the International Telecommunication Union (ITU). It consists\
+        \ of a threeletter alphanumeric prefix that indicates nationality, followed\
+        \ by one to four characters to identify the individual vessel. For instance,\
+        \ vessels registered under Denmark are assigned the prefix ranges 5PA-5QZ,\
+        \ OUAOZZ, and XPA-XPZ. The Call Sign changes whenever a vessel changes its\
+        \ flag."
+      example: NCVV
+      maxLength: 10
+      type: string
+    vesselOperatorCarrierCode:
+      description: The carrier who is in charge of the vessel operation based on either
+        the SMDG or SCAC code lists
+      example: MAEU
+      maxLength: 10
+      nullable: false
+      type: string
+    vesselOperatorCarrierCodeListProvider:
+      description: Identifies the code list provider used for the operator and partner
+        carriercodes.
+      enum:
+      - SMDG
+      - NMFTA
+      example: NMFTA
+      nullable: false
+      type: string
+    documentReferences:
+      description: An optional list of key-value (documentReferenceType-documentReferenceValue)
+        pairs representing links to objects relevant to the event. The <b>documentReferenceType</b>-field
+        is used to describe where the <b>documentReferenceValue</b>-field is pointing
+        to.
       example:
-        emptyReturnDepot: emptyReturnDepot
-        size: 1
-        movements:
-        - date: 2000-01-23T04:56:07.000+00:00
-          pointOfDischarge: pointOfDischarge
-          statusOrder: statusOrder
-          pointLocation:
-            code: code
-            name: name
-          portOfOrigin: portOfOrigin
-          shipCompCode: shipCompCode
-          finalPod: finalPod
-          voyageShipCompCode: voyageShipCompCode
-          poolLocation: poolLocation
-          reportedOn: 2000-01-23T04:56:07.000+00:00
-          countryCode: countryCode
-          vessel:
-            code: code
-            name: name
-            imo: imo
-          voyageReference: voyageReference
-          portOfLoading: portOfLoading
-          finalDest: finalDest
-          status:
-            code: code
-            name: name
-        - date: 2000-01-23T04:56:07.000+00:00
-          pointOfDischarge: pointOfDischarge
-          statusOrder: statusOrder
-          pointLocation:
-            code: code
-            name: name
-          portOfOrigin: portOfOrigin
-          shipCompCode: shipCompCode
-          finalPod: finalPod
-          voyageShipCompCode: voyageShipCompCode
-          poolLocation: poolLocation
-          reportedOn: 2000-01-23T04:56:07.000+00:00
-          countryCode: countryCode
-          vessel:
-            code: code
-            name: name
-            imo: imo
-          voyageReference: voyageReference
-          portOfLoading: portOfLoading
-          finalDest: finalDest
-          status:
-            code: code
-            name: name
-        id: id
-        type: type
+      - documentReferenceType: BKG
+        documentReferenceValue: ABC123123123
+      - documentReferenceType: TRD
+        documentReferenceValue: 85943567-eedb-98d3-f4ed-aed697474ed4
+      items:
+        $ref: '#/components/schemas/documentReferences_inner'
+      type: array
+    references:
       properties:
-        id:
-          description: Container ID
-          type: string
-        size:
-          description: Size in TEU
-          type: integer
-        emptyReturnDepot:
-          description: Empty return depot
-          type: string
-        type:
-          description: type of the container such as ST, ..
-          type: string
-        movements:
+        references:
           items:
-            $ref: '#/components/schemas/Movement'
+            $ref: '#/components/schemas/reference'
           type: array
       type: object
-    Movement:
-      example:
-        date: 2000-01-23T04:56:07.000+00:00
-        pointOfDischarge: pointOfDischarge
-        statusOrder: statusOrder
-        pointLocation:
-          code: code
-          name: name
-        portOfOrigin: portOfOrigin
-        shipCompCode: shipCompCode
-        finalPod: finalPod
-        voyageShipCompCode: voyageShipCompCode
-        poolLocation: poolLocation
-        reportedOn: 2000-01-23T04:56:07.000+00:00
-        countryCode: countryCode
-        vessel:
-          code: code
-          name: name
-          imo: imo
-        voyageReference: voyageReference
-        portOfLoading: portOfLoading
-        finalDest: finalDest
-        status:
-          code: code
-          name: name
-      properties:
-        statusOrder:
-          description: movement display order
-          type: string
-        status:
-          $ref: '#/components/schemas/CodeAndName'
-        date:
-          description: date of the movement
-          format: date-time
-          type: string
-        reportedOn:
-          description: date of move integration
-          format: date-time
-          type: string
-        poolLocation:
-          description: terminal of the movement
-          type: string
-        pointLocation:
-          $ref: '#/components/schemas/CodeAndName'
-        voyageReference:
-          description: Voyage Reference
-          type: string
-        vessel:
-          $ref: '#/components/schemas/Vessel'
-        pointOfDischarge:
-          description: point of discharge
-          type: string
-        portOfOrigin:
-          description: point of origin
-          type: string
-        portOfLoading:
-          description: point of loading
-          type: string
-        finalPod:
-          description: final port of discharge
-          type: string
-        finalDest:
-          description: final point of destination
-          type: string
-        countryCode:
-          description: country code such as FR
-          type: string
-        shipCompCode:
-          description: shipping companies codes are 0001, 0002... provided by CMA
-            CGM referential
-          type: string
-        voyageShipCompCode:
-          description: voyage number
-          type: string
+    reference:
+      allOf:
+      - $ref: '#/components/schemas/reference_allOf'
+      - $ref: '#/components/schemas/reference_allOf_1'
+      description: "references provided by the shipper or freight forwarder at the\
+        \ time of booking or at the time of providing shipping instruction. Carriers\
+        \ share it back when providing track and trace event updates, some are also\
+        \ printed on the B/L. Customers can use these references to track shipments\
+        \ in their internal systems."
+      required:
+      - referenceType
+      - referenceValue
       type: object
-    Shipment:
-      example:
-        portOfLoadingCountryCode: portOfLoadingCountryCode
-        routes:
-        - containers:
-          - emptyReturnDepot: emptyReturnDepot
-            size: 1
-            movements:
-            - date: 2000-01-23T04:56:07.000+00:00
-              pointOfDischarge: pointOfDischarge
-              statusOrder: statusOrder
-              pointLocation:
-                code: code
-                name: name
-              portOfOrigin: portOfOrigin
-              shipCompCode: shipCompCode
-              finalPod: finalPod
-              voyageShipCompCode: voyageShipCompCode
-              poolLocation: poolLocation
-              reportedOn: 2000-01-23T04:56:07.000+00:00
-              countryCode: countryCode
-              vessel:
-                code: code
-                name: name
-                imo: imo
-              voyageReference: voyageReference
-              portOfLoading: portOfLoading
-              finalDest: finalDest
-              status:
-                code: code
-                name: name
-            - date: 2000-01-23T04:56:07.000+00:00
-              pointOfDischarge: pointOfDischarge
-              statusOrder: statusOrder
-              pointLocation:
-                code: code
-                name: name
-              portOfOrigin: portOfOrigin
-              shipCompCode: shipCompCode
-              finalPod: finalPod
-              voyageShipCompCode: voyageShipCompCode
-              poolLocation: poolLocation
-              reportedOn: 2000-01-23T04:56:07.000+00:00
-              countryCode: countryCode
-              vessel:
-                code: code
-                name: name
-                imo: imo
-              voyageReference: voyageReference
-              portOfLoading: portOfLoading
-              finalDest: finalDest
-              status:
-                code: code
-                name: name
-            id: id
-            type: type
-          - emptyReturnDepot: emptyReturnDepot
-            size: 1
-            movements:
-            - date: 2000-01-23T04:56:07.000+00:00
-              pointOfDischarge: pointOfDischarge
-              statusOrder: statusOrder
-              pointLocation:
-                code: code
-                name: name
-              portOfOrigin: portOfOrigin
-              shipCompCode: shipCompCode
-              finalPod: finalPod
-              voyageShipCompCode: voyageShipCompCode
-              poolLocation: poolLocation
-              reportedOn: 2000-01-23T04:56:07.000+00:00
-              countryCode: countryCode
-              vessel:
-                code: code
-                name: name
-                imo: imo
-              voyageReference: voyageReference
-              portOfLoading: portOfLoading
-              finalDest: finalDest
-              status:
-                code: code
-                name: name
-            - date: 2000-01-23T04:56:07.000+00:00
-              pointOfDischarge: pointOfDischarge
-              statusOrder: statusOrder
-              pointLocation:
-                code: code
-                name: name
-              portOfOrigin: portOfOrigin
-              shipCompCode: shipCompCode
-              finalPod: finalPod
-              voyageShipCompCode: voyageShipCompCode
-              poolLocation: poolLocation
-              reportedOn: 2000-01-23T04:56:07.000+00:00
-              countryCode: countryCode
-              vessel:
-                code: code
-                name: name
-                imo: imo
-              voyageReference: voyageReference
-              portOfLoading: portOfLoading
-              finalDest: finalDest
-              status:
-                code: code
-                name: name
-            id: id
-            type: type
-          journeyLegs:
-          - pointFrom:
-              code: code
-              name: name
-            vesselTo:
-              code: code
-              name: name
-              imo: imo
-            sequenceNumber: 6
-            poolLocationToCode: poolLocationToCode
-            pointTo:
-              code: code
-              name: name
-            dischargeVoyageReference: dischargeVoyageReference
-            vesselFrom:
-              code: code
-              name: name
-              imo: imo
-            poolLocationFromCode: poolLocationFromCode
-            voyageReference: voyageReference
-            shipCompCode: shipCompCode
-            deliveryDate: 2000-01-23T04:56:07.000+00:00
-            collectionDate: 2000-01-23T04:56:07.000+00:00
-          - pointFrom:
-              code: code
-              name: name
-            vesselTo:
-              code: code
-              name: name
-              imo: imo
-            sequenceNumber: 6
-            poolLocationToCode: poolLocationToCode
-            pointTo:
-              code: code
-              name: name
-            dischargeVoyageReference: dischargeVoyageReference
-            vesselFrom:
-              code: code
-              name: name
-              imo: imo
-            poolLocationFromCode: poolLocationFromCode
-            voyageReference: voyageReference
-            shipCompCode: shipCompCode
-            deliveryDate: 2000-01-23T04:56:07.000+00:00
-            collectionDate: 2000-01-23T04:56:07.000+00:00
-        - containers:
-          - emptyReturnDepot: emptyReturnDepot
-            size: 1
-            movements:
-            - date: 2000-01-23T04:56:07.000+00:00
-              pointOfDischarge: pointOfDischarge
-              statusOrder: statusOrder
-              pointLocation:
-                code: code
-                name: name
-              portOfOrigin: portOfOrigin
-              shipCompCode: shipCompCode
-              finalPod: finalPod
-              voyageShipCompCode: voyageShipCompCode
-              poolLocation: poolLocation
-              reportedOn: 2000-01-23T04:56:07.000+00:00
-              countryCode: countryCode
-              vessel:
-                code: code
-                name: name
-                imo: imo
-              voyageReference: voyageReference
-              portOfLoading: portOfLoading
-              finalDest: finalDest
-              status:
-                code: code
-                name: name
-            - date: 2000-01-23T04:56:07.000+00:00
-              pointOfDischarge: pointOfDischarge
-              statusOrder: statusOrder
-              pointLocation:
-                code: code
-                name: name
-              portOfOrigin: portOfOrigin
-              shipCompCode: shipCompCode
-              finalPod: finalPod
-              voyageShipCompCode: voyageShipCompCode
-              poolLocation: poolLocation
-              reportedOn: 2000-01-23T04:56:07.000+00:00
-              countryCode: countryCode
-              vessel:
-                code: code
-                name: name
-                imo: imo
-              voyageReference: voyageReference
-              portOfLoading: portOfLoading
-              finalDest: finalDest
-              status:
-                code: code
-                name: name
-            id: id
-            type: type
-          - emptyReturnDepot: emptyReturnDepot
-            size: 1
-            movements:
-            - date: 2000-01-23T04:56:07.000+00:00
-              pointOfDischarge: pointOfDischarge
-              statusOrder: statusOrder
-              pointLocation:
-                code: code
-                name: name
-              portOfOrigin: portOfOrigin
-              shipCompCode: shipCompCode
-              finalPod: finalPod
-              voyageShipCompCode: voyageShipCompCode
-              poolLocation: poolLocation
-              reportedOn: 2000-01-23T04:56:07.000+00:00
-              countryCode: countryCode
-              vessel:
-                code: code
-                name: name
-                imo: imo
-              voyageReference: voyageReference
-              portOfLoading: portOfLoading
-              finalDest: finalDest
-              status:
-                code: code
-                name: name
-            - date: 2000-01-23T04:56:07.000+00:00
-              pointOfDischarge: pointOfDischarge
-              statusOrder: statusOrder
-              pointLocation:
-                code: code
-                name: name
-              portOfOrigin: portOfOrigin
-              shipCompCode: shipCompCode
-              finalPod: finalPod
-              voyageShipCompCode: voyageShipCompCode
-              poolLocation: poolLocation
-              reportedOn: 2000-01-23T04:56:07.000+00:00
-              countryCode: countryCode
-              vessel:
-                code: code
-                name: name
-                imo: imo
-              voyageReference: voyageReference
-              portOfLoading: portOfLoading
-              finalDest: finalDest
-              status:
-                code: code
-                name: name
-            id: id
-            type: type
-          journeyLegs:
-          - pointFrom:
-              code: code
-              name: name
-            vesselTo:
-              code: code
-              name: name
-              imo: imo
-            sequenceNumber: 6
-            poolLocationToCode: poolLocationToCode
-            pointTo:
-              code: code
-              name: name
-            dischargeVoyageReference: dischargeVoyageReference
-            vesselFrom:
-              code: code
-              name: name
-              imo: imo
-            poolLocationFromCode: poolLocationFromCode
-            voyageReference: voyageReference
-            shipCompCode: shipCompCode
-            deliveryDate: 2000-01-23T04:56:07.000+00:00
-            collectionDate: 2000-01-23T04:56:07.000+00:00
-          - pointFrom:
-              code: code
-              name: name
-            vesselTo:
-              code: code
-              name: name
-              imo: imo
-            sequenceNumber: 6
-            poolLocationToCode: poolLocationToCode
-            pointTo:
-              code: code
-              name: name
-            dischargeVoyageReference: dischargeVoyageReference
-            vesselFrom:
-              code: code
-              name: name
-              imo: imo
-            poolLocationFromCode: poolLocationFromCode
-            voyageReference: voyageReference
-            shipCompCode: shipCompCode
-            deliveryDate: 2000-01-23T04:56:07.000+00:00
-            collectionDate: 2000-01-23T04:56:07.000+00:00
-        nbUnits: 0
-        portOfDischarge:
-          code: code
-          name: name
-        voyageReference: voyageReference
-        portOfLoading:
-          code: code
-          name: name
-        portOfDischargeCountryCode: portOfDischargeCountryCode
+    referenceType:
+      description: The reference type codes defined by DCSA. - FF (Freight Forwarder’s
+        Reference) - SI (Shipper’s Reference) - PO (Purchase Order Reference) - CR
+        (Customer’s Reference) - AAO (Consignee’s Reference) - EQ (Equipment Reference)
+      enum:
+      - FF
+      - SI
+      - PO
+      - CR
+      - AAO
+      - EQ
+      example: FF
+      type: string
+    referenceValue:
+      description: The actual value of the reference.
+      maxLength: 100
+      type: string
+    shipmentEvent:
+      allOf:
+      - $ref: '#/components/schemas/baseEvent'
+      - $ref: '#/components/schemas/baseShipmentEvent'
+      type: object
+    baseShipmentEvent:
+      allOf:
+      - $ref: '#/components/schemas/baseShipmentEvent_allOf'
+      - $ref: '#/components/schemas/baseShipmentEvent_allOf_1'
+      - $ref: '#/components/schemas/baseTransportEvent_allOf_1'
+      - $ref: '#/components/schemas/baseShipmentEvent_allOf_2'
+      - $ref: '#/components/schemas/baseShipmentEvent_allOf_3'
+      - $ref: '#/components/schemas/baseShipmentEvent_allOf_4'
+      - $ref: '#/components/schemas/baseShipmentEvent_allOf_5'
+      - $ref: '#/components/schemas/baseShipmentEvent_allOf_6'
+      - $ref: '#/components/schemas/references'
+      description: The shipment event entity is a specialization of the event entity
+        to support specification of data that only applies to a shipment event.
+      required:
+      - documentID
+      - documentTypeCode
+      - shipmentEventTypeCode
+      type: object
+    shipmentEventTypeCode:
+      description: |-
+        The status of the document in the process. Possible values are - RECE (Received) - DRFT (Drafted) - PENA (Pending Approval) - PENU (Pending Update) - REJE (Rejected) - APPR (Approved) - ISSU (Issued) - SURR (Surrendered) - SUBM (Submitted) - VOID (Void) - CONF (Confirmed) - REQS (Requested) - CMPL (Completed) - HOLD (On Hold) - RELS (Released)
+        More details can be found on <a href="https://github.com/dcsaorg/DCSA-Information-Model/blob/master/datamodel/referencedata.d/shipmenteventtypecodes.csv">GitHub</a>
+      enum:
+      - RECE
+      - DRFT
+      - PENA
+      - PENU
+      - REJE
+      - APPR
+      - ISSU
+      - SURR
+      - SUBM
+      - VOID
+      - CONF
+      - REQS
+      - CMPL
+      - HOLD
+      - RELS
+      example: DRFT
+      type: string
+    documentID:
+      description: The id of the object defined by the documentTypeCode.
+      example: the-id-of-the-documentTypeCode
+      type: string
+    documentTypeCode:
+      description: |-
+        The code to identify the type of information documentID points to. Can be one of the following values - CBR (Carrier Booking Request Reference) - BKG (Booking) - SHI (Shipping Instruction) - SRM (Shipment Release Message) - TRD (Transport Document) - ARN (Arrival Notice) - VGM (Verified Gross Mass) - CAS (Cargo Survey) - CUS (Customs Inspection) - DGD (Dangerous Goods Declaration) - OOG (Out of Gauge)
+        More details can be found on <a href="https://github.com/dcsaorg/DCSA-Information-Model/blob/master/datamodel/referencedata.d/documenttypecodes.csv">GitHub</a>
+      enum:
+      - CBR
+      - BKG
+      - SHI
+      - SRM
+      - TRD
+      - ARN
+      - VGM
+      - CAS
+      - CUS
+      - DGD
+      - OOG
+      example: SHI
+      maxLength: 3
+      type: string
+    reason:
+      description: Reason field in a Shipment event. This field can be used to explain
+        why a specific event has been sent.
+      example: The following attributes are missing...
+      type: string
+    shipmentID:
+      description: The identifier for a shipment
+      example: d9c69bc8-294d-46d1-807c-654598341374
+      format: uuid
+      type: string
+    equipmentEvent:
+      allOf:
+      - $ref: '#/components/schemas/baseEvent'
+      - $ref: '#/components/schemas/baseEquipmentEvent'
+      type: object
+    baseEquipmentEvent:
+      allOf:
+      - $ref: '#/components/schemas/baseEquipmentEvent_allOf'
+      - $ref: '#/components/schemas/baseEquipmentEvent_allOf_1'
+      - $ref: '#/components/schemas/baseEquipmentEvent_allOf_2'
+      - $ref: '#/components/schemas/baseEquipmentEvent_allOf_3'
+      - $ref: '#/components/schemas/baseEquipmentEvent_allOf_4'
+      - $ref: '#/components/schemas/baseEquipmentEvent_allOf_5'
+      - $ref: '#/components/schemas/baseEquipmentEvent_allOf_6'
+      - $ref: '#/components/schemas/baseTransportEvent_allOf_5'
+      - $ref: '#/components/schemas/transportEvent_allOf'
+      - $ref: '#/components/schemas/references'
+      - $ref: '#/components/schemas/seals'
+      description: The equipment event entity is a specialization of the event entity
+        to support specification of data that only applies to an equipment event.
+      required:
+      - emptyIndicatorCode
+      - equipmentEventTypeCode
+      type: object
+    equipmentEventTypeCode:
+      description: |-
+        Unique identifier for equipmentEventTypeCode. - LOAD (Loaded) - DISC (Discharged) - GTIN (Gated in) - GTOT (Gated out) - STUF (Stuffed) - STRP (Stripped) - PICK (Pick-up) - DROP (Drop-off) - INSP (Inspected) - RSEA (Resealed) - RMVD (Removed)
+        More details can be found on <a href="https://github.com/dcsaorg/DCSA-Information-Model/blob/master/datamodel/referencedata.d/equipmenteventtypecodes.csv">GitHub</a>
+      enum:
+      - LOAD
+      - DISC
+      - GTIN
+      - GTOT
+      - STUF
+      - STRP
+      - PICK
+      - DROP
+      - INSP
+      - RSEA
+      - RMVD
+      example: LOAD
+      type: string
+    ISOEquipmentCode:
+      description: Unique code for the different equipment size/type used for transporting
+        commodities. The code is a concatenation of ISO Equipment Size Code and ISO
+        Equipment Type Code A and follows the ISO 6346 standard.
+      example: 22GP
+      maxLength: 4
+      type: string
+    emptyIndicatorCode:
+      description: Code to denote whether the equipment is empty or laden.
+      enum:
+      - EMPTY
+      - LADEN
+      example: EMPTY
+      type: string
+    seals:
       properties:
-        portOfLoading:
-          $ref: '#/components/schemas/CodeAndName'
-        portOfLoadingCountryCode:
-          description: country code of the port of loading such as FR
-          type: string
-        portOfDischarge:
-          $ref: '#/components/schemas/CodeAndName'
-        portOfDischargeCountryCode:
-          description: country code of the port of discharge such as FR
-          type: string
-        voyageReference:
-          description: Voyage Reference
-          type: string
-        nbUnits:
-          description: Number of units
-          type: integer
-        routes:
+        seals:
           items:
-            $ref: '#/components/schemas/Route'
+            $ref: '#/components/schemas/seal'
           type: array
       type: object
-    Fault:
+    seal:
+      allOf:
+      - $ref: '#/components/schemas/seal_allOf'
+      - $ref: '#/components/schemas/seal_allOf_1'
+      - $ref: '#/components/schemas/seal_allOf_2'
+      description: addresses the seal-related information associated with the shipment
+        equipment. A seal is put on a shipment equipment once it is loaded. This seal
+        is meant to stay on until the shipment equipment reaches its final destination.
+      required:
+      - sealNumber
+      - sealType
+      type: object
+    sealNumber:
+      description: Identifies a seal affixed to the container.
+      maxLength: 15
+      type: string
+    sealSource:
+      description: "The source of the seal, namely who has affixed the seal. This\
+        \ attribute links to the Seal Source ID defined in the Seal Source reference\
+        \ data entity. - CAR (Carrier) - SHI (Shipper) - PHY (Phytosanitary) - VET\
+        \ (Veterinary) - CUS (Customs)"
+      enum:
+      - CAR
+      - SHI
+      - PHY
+      - VET
+      - CUS
+      example: CUS
+      type: string
+    sealType:
+      description: The type of seal. This attribute links to the Seal Type ID defined
+        in the Seal Type reference data entity. - KLP (Keyless padlock) - BLT (Bolt)
+        - WIR (Wire)
+      enum:
+      - KLP
+      - BLT
+      - WIR
+      example: WIR
+      type: string
+    error:
       properties:
-        reason:
-          description: HTTP error or Free text such as  Database Not Available , Invalid
-            Credential, Mandatory, Invalid Format,  Invalid Length, ForbiddenValue,
-            Invalid Data,...
+        httpMethod:
+          description: The HTTP request method type
+          example: POST
           type: string
-        code:
-          description: Error Id,  Server Application error ID, Oracle error Id, ....
+        requestUri:
+          description: The request URI.
+          example: https://dcsa.org/dcsa/tnt/v1/events
           type: string
-        description:
-          description: Human-readable error description including Data and Value
+        errors:
+          items:
+            $ref: '#/components/schemas/subErrors_inner'
+          type: array
+        statusCode:
+          description: The HTTP status code
+          example: 400
+          type: integer
+        statusCodeText:
+          description: The textual representation of the response status.
+          example: Bad Request
+          type: string
+        errorDateTime:
+          description: The date and time (in ISO 8601 format) the error occurred.
+          example: 2019-11-12T07:41:00+08:30
+          format: $date-time
           type: string
       required:
+      - errorDateTime
+      - errors
+      - httpMethod
+      - requestUri
+      - statusCode
+      - statusCodeText
+      type: object
+    subErrors:
+      items:
+        $ref: '#/components/schemas/subErrors_inner'
+      type: array
+    inline_response_default:
+      allOf:
+      - $ref: '#/components/schemas/error'
+      - $ref: '#/components/schemas/inline_response_default_allOf'
+      - $ref: '#/components/schemas/inline_response_default_allOf_1'
+    documentReferences_inner:
+      properties:
+        documentReferenceType:
+          description: Describes where the documentReferenceValue is pointing to
+          enum:
+          - BKG (Booking)
+          - TRD (Transport Document)
+          example: BKG
+          type: string
+        documentReferenceValue:
+          description: The value of the identifier the documentReferenceType is describing
+          example: 123e4567-e89b-12d3-a456-426614174000
+          type: string
+      type: object
+    carrierSpecificData:
+      properties:
+        internalEventCode:
+          description: CMA internal event Code
+          example: XOF
+          type: string
+        internalEventLabel:
+          description: CMA internal event Label
+          example: Load on Board
+          type: string
+        internalLocationCode:
+          description: CMA internal location Code
+          example: FRMRS
+          type: string
+        internalFacilityCode:
+          description: CMA internal facility Code
+          example: FRMRSD2DT
+          type: string
+        bookingExportVoyageReference:
+          description: Carrier export voyage reference defined on Booking
+          example: NR145F8MA
+          type: string
+        transportationPhase:
+          description: "The Transportation phase, Export, Transshipent or Import"
+          example: Export
+          type: string
+        transportCallSequenceTotal:
+          description: The total number of sequence provided in transportation plan
+          example: 2
+          type: integer
+        numberOfUnits:
+          description: The total number equipment units concerned by the message
+          example: 1
+          type: integer
+      type: object
+    subErrors_inner:
+      properties:
+        reason:
+          description: High level error message.
+          example: invalidQuery
+          type: string
+        message:
+          description: Detailed error message.
+          example: The request did not contain one of the three required query parameters.
+          type: string
+      required:
+      - message
       - reason
       type: object
-    JourneyLeg:
-      example:
-        pointFrom:
-          code: code
-          name: name
-        vesselTo:
-          code: code
-          name: name
-          imo: imo
-        sequenceNumber: 6
-        poolLocationToCode: poolLocationToCode
-        pointTo:
-          code: code
-          name: name
-        dischargeVoyageReference: dischargeVoyageReference
-        vesselFrom:
-          code: code
-          name: name
-          imo: imo
-        poolLocationFromCode: poolLocationFromCode
-        voyageReference: voyageReference
-        shipCompCode: shipCompCode
-        deliveryDate: 2000-01-23T04:56:07.000+00:00
-        collectionDate: 2000-01-23T04:56:07.000+00:00
+    searchMoveOnCommercialCycle_200_response_inner:
+      anyOf:
+      - $ref: '#/components/schemas/transportEvent'
+      - $ref: '#/components/schemas/shipmentEvent'
+      - $ref: '#/components/schemas/equipmentEvent'
+    transportEvent_allOf:
       properties:
-        sequenceNumber:
-          description: sequence number of the journey leg
-          type: integer
-        pointFrom:
-          $ref: '#/components/schemas/CodeAndName'
-        vesselFrom:
-          $ref: '#/components/schemas/Vessel'
-        vesselTo:
-          $ref: '#/components/schemas/Vessel'
-        pointTo:
-          $ref: '#/components/schemas/CodeAndName'
-        poolLocationFromCode:
-          description: pool code of journey leg departure
-          type: string
-        poolLocationToCode:
-          description: pool code of journey leg arrival
-          type: string
-        collectionDate:
-          description: collection date
-          format: date-time
-          type: string
-        voyageReference:
-          description: voyage reference at the journey leg departure
-          type: string
-        dischargeVoyageReference:
-          description: voyage reference at the journey leg arrival
-          type: string
-        deliveryDate:
-          description: delivery date
-          format: date-time
-          type: string
-        shipCompCode:
-          description: shipping companies codes are 0001, 0002... provided by CMA
-            CGM
+        documentReferences:
+          description: An optional list of key-value (documentReferenceType-documentReferenceValue)
+            pairs representing links to objects relevant to the event. The <b>documentReferenceType</b>-field
+            is used to describe where the <b>documentReferenceValue</b>-field is pointing
+            to.
+          example:
+          - documentReferenceType: BKG
+            documentReferenceValue: ABC123123123
+          - documentReferenceType: TRD
+            documentReferenceValue: 85943567-eedb-98d3-f4ed-aed697474ed4
+          items:
+            $ref: '#/components/schemas/documentReferences_inner'
+          type: array
+      type: object
+    baseEvent_allOf:
+      properties:
+        eventID:
+          description: |-
+            The unique identifier for the event (the message - not the source).
+            <b>NB</b>&#58; This field should be considered Metadata
+          example: 84db923d-2a19-4eb0-beb5-446c1ec57d34
+          format: uuid
           type: string
       type: object
-    Route:
-      example:
-        containers:
-        - emptyReturnDepot: emptyReturnDepot
-          size: 1
-          movements:
-          - date: 2000-01-23T04:56:07.000+00:00
-            pointOfDischarge: pointOfDischarge
-            statusOrder: statusOrder
-            pointLocation:
-              code: code
-              name: name
-            portOfOrigin: portOfOrigin
-            shipCompCode: shipCompCode
-            finalPod: finalPod
-            voyageShipCompCode: voyageShipCompCode
-            poolLocation: poolLocation
-            reportedOn: 2000-01-23T04:56:07.000+00:00
-            countryCode: countryCode
-            vessel:
-              code: code
-              name: name
-              imo: imo
-            voyageReference: voyageReference
-            portOfLoading: portOfLoading
-            finalDest: finalDest
-            status:
-              code: code
-              name: name
-          - date: 2000-01-23T04:56:07.000+00:00
-            pointOfDischarge: pointOfDischarge
-            statusOrder: statusOrder
-            pointLocation:
-              code: code
-              name: name
-            portOfOrigin: portOfOrigin
-            shipCompCode: shipCompCode
-            finalPod: finalPod
-            voyageShipCompCode: voyageShipCompCode
-            poolLocation: poolLocation
-            reportedOn: 2000-01-23T04:56:07.000+00:00
-            countryCode: countryCode
-            vessel:
-              code: code
-              name: name
-              imo: imo
-            voyageReference: voyageReference
-            portOfLoading: portOfLoading
-            finalDest: finalDest
-            status:
-              code: code
-              name: name
-          id: id
-          type: type
-        - emptyReturnDepot: emptyReturnDepot
-          size: 1
-          movements:
-          - date: 2000-01-23T04:56:07.000+00:00
-            pointOfDischarge: pointOfDischarge
-            statusOrder: statusOrder
-            pointLocation:
-              code: code
-              name: name
-            portOfOrigin: portOfOrigin
-            shipCompCode: shipCompCode
-            finalPod: finalPod
-            voyageShipCompCode: voyageShipCompCode
-            poolLocation: poolLocation
-            reportedOn: 2000-01-23T04:56:07.000+00:00
-            countryCode: countryCode
-            vessel:
-              code: code
-              name: name
-              imo: imo
-            voyageReference: voyageReference
-            portOfLoading: portOfLoading
-            finalDest: finalDest
-            status:
-              code: code
-              name: name
-          - date: 2000-01-23T04:56:07.000+00:00
-            pointOfDischarge: pointOfDischarge
-            statusOrder: statusOrder
-            pointLocation:
-              code: code
-              name: name
-            portOfOrigin: portOfOrigin
-            shipCompCode: shipCompCode
-            finalPod: finalPod
-            voyageShipCompCode: voyageShipCompCode
-            poolLocation: poolLocation
-            reportedOn: 2000-01-23T04:56:07.000+00:00
-            countryCode: countryCode
-            vessel:
-              code: code
-              name: name
-              imo: imo
-            voyageReference: voyageReference
-            portOfLoading: portOfLoading
-            finalDest: finalDest
-            status:
-              code: code
-              name: name
-          id: id
-          type: type
-        journeyLegs:
-        - pointFrom:
-            code: code
-            name: name
-          vesselTo:
-            code: code
-            name: name
-            imo: imo
-          sequenceNumber: 6
-          poolLocationToCode: poolLocationToCode
-          pointTo:
-            code: code
-            name: name
-          dischargeVoyageReference: dischargeVoyageReference
-          vesselFrom:
-            code: code
-            name: name
-            imo: imo
-          poolLocationFromCode: poolLocationFromCode
-          voyageReference: voyageReference
-          shipCompCode: shipCompCode
-          deliveryDate: 2000-01-23T04:56:07.000+00:00
-          collectionDate: 2000-01-23T04:56:07.000+00:00
-        - pointFrom:
-            code: code
-            name: name
-          vesselTo:
-            code: code
-            name: name
-            imo: imo
-          sequenceNumber: 6
-          poolLocationToCode: poolLocationToCode
-          pointTo:
-            code: code
-            name: name
-          dischargeVoyageReference: dischargeVoyageReference
-          vesselFrom:
-            code: code
-            name: name
-            imo: imo
-          poolLocationFromCode: poolLocationFromCode
-          voyageReference: voyageReference
-          shipCompCode: shipCompCode
-          deliveryDate: 2000-01-23T04:56:07.000+00:00
-          collectionDate: 2000-01-23T04:56:07.000+00:00
+    baseEvent_allOf_1:
       properties:
-        journeyLegs:
-          items:
-            $ref: '#/components/schemas/JourneyLeg'
-          type: array
-        containers:
-          items:
-            $ref: '#/components/schemas/Container'
-          type: array
+        eventCreatedDateTime:
+          description: |-
+            The timestamp of when the event was created.
+            <b>NB</b>&#58; This field should be considered Metadata
+          example: 2021-01-09T14:12:56+01:00
+          format: date-time
+          type: string
+      type: object
+    baseEventBody_allOf:
+      properties:
+        eventType:
+          description: |-
+            The Event Type of the object - to be used as a discriminator.
+            <b>NB</b>&#58; This field should be considered Metadata
+          type: string
+      type: object
+    baseEventBody_allOf_1:
+      properties:
+        eventClassifierCode:
+          description: Code for the event classifier. Values can vary depending on
+            eventType
+          type: string
+      type: object
+    baseEventBody_allOf_2:
+      properties:
+        eventDateTime:
+          description: "The local date and time, where the event took place or when\
+            \ the event will take place, in ISO 8601 format."
+          example: 2019-11-12T07:41:00+08:30
+          format: date-time
+          type: string
+      type: object
+    baseEventBody_allOf_3:
+      properties:
+        carrierSpecificData:
+          $ref: '#/components/schemas/carrierSpecificData'
+      type: object
+    baseTransportEvent_allOf:
+      properties:
+        eventType:
+          enum:
+          - TRANSPORT
+          example: TRANSPORT
+          type: string
+      type: object
+    baseTransportEvent_allOf_1:
+      properties:
+        eventClassifierCode:
+          description: Code for the event classifier can be - ACT (Actual) - PLN (Planned)
+            - EST (Estimated)
+          enum:
+          - ACT
+          - PLN
+          - EST
+          example: ACT
+          type: string
+      type: object
+    baseTransportEvent_allOf_2:
+      properties:
+        transportEventTypeCode:
+          $ref: '#/components/schemas/transportEventTypeCode'
+      type: object
+    baseTransportEvent_allOf_3:
+      properties:
+        delayReasonCode:
+          description: Reason code for the delay. The SMDG-Delay-Reason-Codes are
+            used for this attribute. The code list can be found at http://www.smdg.org/smdg-code-lists/
+          example: WEA
+          maxLength: 3
+          type: string
+      type: object
+    baseTransportEvent_allOf_4:
+      properties:
+        changeRemark:
+          description: Free text information provided by the vessel operator regarding
+            the reasons for the change in schedule and/or plans to mitigate schedule
+            slippage.
+          example: Bad weather
+          maxLength: 250
+          type: string
+      type: object
+    baseTransportEvent_allOf_5:
+      properties:
+        transportCall:
+          $ref: '#/components/schemas/transportCall'
+      type: object
+    transportCall_allOf:
+      properties:
+        transportCallID:
+          description: The unique identifier for a transport call
+          example: 123e4567-e89b-12d3-a456-426614174000
+          maxLength: 100
+          type: string
+      type: object
+    transportCall_allOf_1:
+      properties:
+        carrierServiceCode:
+          description: The code of the service for which the schedule details are
+            published.
+          example: FE1
+          maxLength: 5
+          type: string
+      type: object
+    transportCall_allOf_2:
+      properties:
+        carrierVoyageNumber:
+          description: The vessel operator-specific identifier of the Voyage.
+          example: 2103S
+          maxLength: 50
+          type: string
+      type: object
+    transportCall_allOf_3:
+      properties:
+        carrierVoyageNumber:
+          deprecated: true
+          description: |-
+            The vessel operator-specific identifier of the Voyage.
+            In case there are multiple voyages the export voyage is chosen.
+      type: object
+    transportCall_allOf_4:
+      properties:
+        exportVoyageNumber:
+          description: The vessel operator-specific identifier of the export Voyage.
+          example: 2103S
+          maxLength: 50
+          type: string
+      type: object
+    transportCall_allOf_5:
+      properties:
+        importVoyageNumber:
+          description: The vessel operator-specific identifier of the import Voyage.
+          example: 2103N
+          maxLength: 50
+          type: string
+      type: object
+    transportCall_allOf_6:
+      properties:
+        transportCallSequenceNumber:
+          description: Transport operator&apos;s key that uniquely identifies each
+            individual call. This key is essential to distinguish between two separate
+            calls at the same location within one voyage.
+          example: 2
+          type: integer
+      type: object
+    transportCall_allOf_7:
+      properties:
+        UNLocationCode:
+          description: The UN Location code specifying where the place is located.
+          example: FRPAR
+          maxLength: 5
+          type: string
+      type: object
+    transportCall_allOf_8:
+      properties:
+        facilityCode:
+          description: The code used for identifying the specific facility. This code
+            does <b>not</b> include the UN Location Code.
+          example: ADT
+          maxLength: 6
+          nullable: false
+          type: string
+      type: object
+    transportCall_allOf_9:
+      properties:
+        facilityCodeListProvider:
+          $ref: '#/components/schemas/facilityCodeListProvider'
+      type: object
+    transportCall_allOf_10:
+      properties:
+        facilityTypeCode:
+          $ref: '#/components/schemas/facilityTypeCodeTRN'
+      type: object
+    transportCall_allOf_11:
+      properties:
+        otherFacility:
+          description: An alternative way to capture the facility when no standardized
+            DCSA facility code can be found.
+          example: Depot location or address
+          maxLength: 50
+          type: string
+      type: object
+    transportCall_allOf_12:
+      properties:
+        modeOfTransport:
+          $ref: '#/components/schemas/modeOfTransport'
+      type: object
+    transportCall_allOf_13:
+      properties:
+        location:
+          allOf:
+          - $ref: '#/components/schemas/location'
+          - description: Location of the facility. Can often be omitted when it is
+              just repeating the contents of the UNLocationCode field.
+            type: object
+      type: object
+    transportCall_allOf_14:
+      properties:
+        vessel:
+          $ref: '#/components/schemas/vessel'
+      type: object
+    location_allOf:
+      properties:
+        locationName:
+          description: The name of the location.
+          example: Eiffel Tower
+          maxLength: 100
+          type: string
+      type: object
+    location_allOf_1:
+      properties:
+        latitude:
+          description: Geographic coordinate that specifies the north–south position
+            of a point on the Earth&apos;s surface.
+          example: "48.8585500"
+          maxLength: 10
+          type: string
+      type: object
+    location_allOf_2:
+      properties:
+        longitude:
+          description: Geographic coordinate that specifies the east–west position
+            of a point on the Earth&apos;s surface.
+          example: "2.294492036"
+          maxLength: 11
+          type: string
+      type: object
+    location_allOf_3:
+      properties:
+        address:
+          allOf:
+          - $ref: '#/components/schemas/address'
+          description: Address related information
+      type: object
+    address_allOf:
+      properties:
+        name:
+          description: Name of the address
+          example: Henrik
+          maxLength: 100
+          type: string
+      type: object
+    address_allOf_1:
+      properties:
+        street:
+          description: The name of the street of the party’s address.
+          example: Kronprincessegade
+          maxLength: 100
+          type: string
+      type: object
+    address_allOf_2:
+      properties:
+        streetNumber:
+          description: The number of the street of the party’s address.
+          example: "54"
+          maxLength: 50
+          type: string
+      type: object
+    address_allOf_3:
+      properties:
+        floor:
+          description: The floor of the party’s street number.
+          example: 5. sal
+          maxLength: 50
+          type: string
+      type: object
+    address_allOf_4:
+      properties:
+        postCode:
+          description: The post code of the party’s address.
+          example: "1306"
+          maxLength: 10
+          type: string
+      type: object
+    address_allOf_5:
+      properties:
+        city:
+          description: The city name of the party’s address.
+          example: København
+          maxLength: 65
+          type: string
+      type: object
+    address_allOf_6:
+      properties:
+        stateRegion:
+          description: The state/region of the party’s address.
+          example: N/A
+          maxLength: 65
+          type: string
+      type: object
+    address_allOf_7:
+      properties:
+        country:
+          description: The country of the party’s address.
+          example: Denmark
+          maxLength: 75
+          type: string
+      type: object
+    vessel_allOf:
+      properties:
+        vesselIMONumber:
+          description: "The unique reference for a registered Vessel. The reference\
+            \ is the International Maritime Organisation (IMO) number, also sometimes\
+            \ known as the Lloyd&apos;s register code, which does not change during\
+            \ the lifetime of the vessel"
+          example: "9321483"
+          maxLength: 7
+          type: string
+      type: object
+    vessel_allOf_1:
+      properties:
+        vesselName:
+          description: The name of the Vessel given by the Vessel Operator and registered
+            with IMO.
+          example: King of the Seas
+          maxLength: 35
+          type: string
+      type: object
+    vessel_allOf_2:
+      properties:
+        vesselFlag:
+          description: The flag of the nation whose laws the vessel is registered
+            under. This is the ISO 3166 two-letter country code
+          example: DE
+          maxLength: 2
+          type: string
+      type: object
+    vessel_allOf_3:
+      properties:
+        vesselCallSignNumber:
+          description: "A unique alphanumeric identity that belongs to the vessel\
+            \ and is assigned by the International Telecommunication Union (ITU).\
+            \ It consists of a threeletter alphanumeric prefix that indicates nationality,\
+            \ followed by one to four characters to identify the individual vessel.\
+            \ For instance, vessels registered under Denmark are assigned the prefix\
+            \ ranges 5PA-5QZ, OUAOZZ, and XPA-XPZ. The Call Sign changes whenever\
+            \ a vessel changes its flag."
+          example: NCVV
+          maxLength: 10
+          type: string
+      type: object
+    vessel_allOf_4:
+      properties:
+        vesselOperatorCarrierCode:
+          description: The carrier who is in charge of the vessel operation based
+            on either the SMDG or SCAC code lists
+          example: MAEU
+          maxLength: 10
+          nullable: false
+          type: string
+      type: object
+    vessel_allOf_5:
+      properties:
+        vesselOperatorCarrierCodeListProvider:
+          $ref: '#/components/schemas/vesselOperatorCarrierCodeListProvider'
+      type: object
+    reference_allOf:
+      properties:
+        referenceType:
+          $ref: '#/components/schemas/referenceType'
+      type: object
+    reference_allOf_1:
+      properties:
+        referenceValue:
+          description: The actual value of the reference.
+          maxLength: 100
+          type: string
+      type: object
+    baseShipmentEvent_allOf:
+      properties:
+        eventType:
+          enum:
+          - SHIPMENT
+          example: SHIPMENT
+          type: string
+      type: object
+    baseShipmentEvent_allOf_1:
+      properties:
+        eventDateTime:
+          description: Value for eventDateTime must be the same value as eventCreatedDateTime
+      type: object
+    baseShipmentEvent_allOf_2:
+      properties:
+        shipmentEventTypeCode:
+          $ref: '#/components/schemas/shipmentEventTypeCode'
+      type: object
+    baseShipmentEvent_allOf_3:
+      properties:
+        documentID:
+          description: The id of the object defined by the documentTypeCode.
+          example: the-id-of-the-documentTypeCode
+          type: string
+      type: object
+    baseShipmentEvent_allOf_4:
+      properties:
+        documentTypeCode:
+          $ref: '#/components/schemas/documentTypeCode'
+      type: object
+    baseShipmentEvent_allOf_5:
+      properties:
+        reason:
+          description: Reason field in a Shipment event. This field can be used to
+            explain why a specific event has been sent.
+          example: The following attributes are missing...
+          type: string
+      type: object
+    baseShipmentEvent_allOf_6:
+      properties:
+        shipmentID:
+          description: The identifier for a shipment
+          example: d9c69bc8-294d-46d1-807c-654598341374
+          format: uuid
+          type: string
+      type: object
+    baseEquipmentEvent_allOf:
+      properties:
+        eventType:
+          enum:
+          - EQUIPMENT
+          example: EQUIPMENT
+          type: string
+      type: object
+    baseEquipmentEvent_allOf_1:
+      properties:
+        eventClassifierCode:
+          description: Code for the event classifier can be - PLN (Planned) - ACT
+            (Actual) - EST (Estimated)
+          enum:
+          - PLN
+          - ACT
+          - EST
+          example: EST
+          type: string
+      type: object
+    baseEquipmentEvent_allOf_2:
+      properties:
+        equipmentEventTypeCode:
+          $ref: '#/components/schemas/equipmentEventTypeCode'
+      type: object
+    baseEquipmentEvent_allOf_3:
+      properties:
+        equipmentReference:
+          description: "The unique identifier for the equipment, which should follow\
+            \ the BIC ISO Container Identification Number where possible. According\
+            \ to ISO 6346, a container identification code consists of a 4-letter\
+            \ prefix and a 7-digit number (composed of a 3-letter owner code, a category\
+            \ identifier, a serial number, and a check-digit). If a container does\
+            \ not comply with ISO 6346, it is suggested to follow Recommendation"
+          example: APZU4812090
+          maxLength: 15
+          type: string
+      type: object
+    baseEquipmentEvent_allOf_4:
+      properties:
+        ISOEquipmentCode:
+          description: Unique code for the different equipment size/type used for
+            transporting commodities. The code is a concatenation of ISO Equipment
+            Size Code and ISO Equipment Type Code A and follows the ISO 6346 standard.
+          example: 22GP
+          maxLength: 4
+          type: string
+      type: object
+    baseEquipmentEvent_allOf_5:
+      properties:
+        emptyIndicatorCode:
+          $ref: '#/components/schemas/emptyIndicatorCode'
+      type: object
+    baseEquipmentEvent_allOf_6:
+      properties:
+        eventLocation:
+          $ref: '#/components/schemas/location'
+      type: object
+    seal_allOf:
+      properties:
+        sealNumber:
+          description: Identifies a seal affixed to the container.
+          maxLength: 15
+          type: string
+      type: object
+    seal_allOf_1:
+      properties:
+        sealSource:
+          $ref: '#/components/schemas/sealSource'
+      type: object
+    seal_allOf_2:
+      properties:
+        sealType:
+          $ref: '#/components/schemas/sealType'
+      type: object
+    inline_response_default_allOf:
+      properties:
+        httpMethod:
+          example: GET
+      type: object
+    inline_response_default_allOf_1:
+      properties:
+        requestUri:
+          example: https://dcsa.org/dcsa/tnt/v2/events
       type: object
   securitySchemes:
-    API Key:
-      description: API Key
+    oAuth2:
+      flows:
+        clientCredentials:
+          scopes:
+            tandtcommercial:read:be: read access for public enpoints
+            tandt:read:be: read access for private enpoints
+            tandtpublic:read:be: read access for public enpoints
+            tandtcommercial:read:fe: read access for front end public enpoints
+            tandtpublic:read:fe: read access for front end public enpoints
+            tandt:read:fe: read access for front end public enpoints
+          tokenUrl: https://auth.cma-cgm.com/as/token.oauth2
+      type: oauth2
+    ApiKeyAuth:
       in: header
-      name: KeyId
+      name: keyId
       type: apiKey
-x-axway:
-  corsEnabled: true
-  basePaths:
-  - ""
-  - ""
-  - ""
-  serviceType: rest
-  deprecated: false
-  tags: {}
-  availableSDK:
-    ios-swift: /discovery/sdk/88381eed-8e6f-4293-ac82-e7c43379825a/ios-swift
-    titanium: /discovery/sdk/88381eed-8e6f-4293-ac82-e7c43379825a/titanium
-    android: /discovery/sdk/88381eed-8e6f-4293-ac82-e7c43379825a/android
-    nodejs: /discovery/sdk/88381eed-8e6f-4293-ac82-e7c43379825a/nodejs
-x-original-swagger-version: "2.0"
