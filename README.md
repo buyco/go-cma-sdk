@@ -9,6 +9,5 @@ make generate
 ```
 
 ## Documentation
-CMA documentation : [api_files/logistic.tracking.v1.json](api_files/logistic.tracking.v1.json)
-
-
+Custom CMA API documentation : [api_files/custom/logistic.tracking.v1.json](api_files/custom/logistic.tracking.v1.json)
+DCSA CMA API documentation : [api_files/dcsa/logistic.tracking.v1.json](api_files/dcsa/logistic.tracking.v1.json)
