@@ -22,20 +22,20 @@ type ShipmentEvent struct {
 	EventID *string `json:"eventID,omitempty"`
 	// The timestamp of when the event was created. <b>NB</b>&#58; This field should be considered Metadata
 	EventCreatedDateTime time.Time `json:"eventCreatedDateTime"`
-	EventType string `json:"eventType"`
+	EventType            string    `json:"eventType"`
 	// Code for the event classifier can be - ACT (Actual) - PLN (Planned) - EST (Estimated)
 	EventClassifierCode string `json:"eventClassifierCode"`
 	// Value for eventDateTime must be the same value as eventCreatedDateTime
-	EventDateTime interface{} `json:"eventDateTime"`
-	CarrierSpecificData *CarrierSpecificData `json:"carrierSpecificData,omitempty"`
+	EventDateTime         interface{}           `json:"eventDateTime"`
+	CarrierSpecificData   *CarrierSpecificData  `json:"carrierSpecificData,omitempty"`
 	ShipmentEventTypeCode ShipmentEventTypeCode `json:"shipmentEventTypeCode"`
 	// The id of the object defined by the documentTypeCode.
-	DocumentID string `json:"documentID"`
+	DocumentID       string           `json:"documentID"`
 	DocumentTypeCode DocumentTypeCode `json:"documentTypeCode"`
 	// Reason field in a Shipment event. This field can be used to explain why a specific event has been sent.
 	Reason *string `json:"reason,omitempty"`
 	// The identifier for a shipment
-	ShipmentID *string `json:"shipmentID,omitempty"`
+	ShipmentID *string     `json:"shipmentID,omitempty"`
 	References []Reference `json:"references,omitempty"`
 }
 
@@ -469,5 +469,3 @@ func (v *NullableShipmentEvent) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

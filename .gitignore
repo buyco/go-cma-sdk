@@ -29,6 +29,13 @@ _testmain.go
 *.test
 *.prof
 
-# Go dir
-vendor/
-bin/
+# Bin dir
+bin
+
+# Vendor dir
+vendor
+
+# Coverfiles
+*.coverprofile
+*.test
+coverage.txt

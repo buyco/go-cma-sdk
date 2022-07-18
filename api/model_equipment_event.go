@@ -22,24 +22,24 @@ type EquipmentEvent struct {
 	EventID *string `json:"eventID,omitempty"`
 	// The timestamp of when the event was created. <b>NB</b>&#58; This field should be considered Metadata
 	EventCreatedDateTime time.Time `json:"eventCreatedDateTime"`
-	EventType string `json:"eventType"`
+	EventType            string    `json:"eventType"`
 	// Code for the event classifier can be - PLN (Planned) - ACT (Actual) - EST (Estimated)
 	EventClassifierCode string `json:"eventClassifierCode"`
 	// The local date and time, where the event took place or when the event will take place, in ISO 8601 format.
-	EventDateTime time.Time `json:"eventDateTime"`
-	CarrierSpecificData *CarrierSpecificData `json:"carrierSpecificData,omitempty"`
+	EventDateTime          time.Time              `json:"eventDateTime"`
+	CarrierSpecificData    *CarrierSpecificData   `json:"carrierSpecificData,omitempty"`
 	EquipmentEventTypeCode EquipmentEventTypeCode `json:"equipmentEventTypeCode"`
 	// The unique identifier for the equipment, which should follow the BIC ISO Container Identification Number where possible. According to ISO 6346, a container identification code consists of a 4-letter prefix and a 7-digit number (composed of a 3-letter owner code, a category identifier, a serial number, and a check-digit). If a container does not comply with ISO 6346, it is suggested to follow Recommendation
 	EquipmentReference *string `json:"equipmentReference,omitempty"`
 	// Unique code for the different equipment size/type used for transporting commodities. The code is a concatenation of ISO Equipment Size Code and ISO Equipment Type Code A and follows the ISO 6346 standard.
-	ISOEquipmentCode *string `json:"ISOEquipmentCode,omitempty"`
+	ISOEquipmentCode   *string            `json:"ISOEquipmentCode,omitempty"`
 	EmptyIndicatorCode EmptyIndicatorCode `json:"emptyIndicatorCode"`
-	EventLocation *Location `json:"eventLocation,omitempty"`
-	TransportCall *TransportCall `json:"transportCall,omitempty"`
+	EventLocation      *Location          `json:"eventLocation,omitempty"`
+	TransportCall      *TransportCall     `json:"transportCall,omitempty"`
 	// An optional list of key-value (documentReferenceType-documentReferenceValue) pairs representing links to objects relevant to the event. The <b>documentReferenceType</b>-field is used to describe where the <b>documentReferenceValue</b>-field is pointing to.
 	DocumentReferences []DocumentReferencesInner `json:"documentReferences,omitempty"`
-	References []Reference `json:"references,omitempty"`
-	Seals []Seal `json:"seals,omitempty"`
+	References         []Reference               `json:"references,omitempty"`
+	Seals              []Seal                    `json:"seals,omitempty"`
 }
 
 // NewEquipmentEvent instantiates a new EquipmentEvent object
@@ -582,5 +582,3 @@ func (v *NullableEquipmentEvent) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

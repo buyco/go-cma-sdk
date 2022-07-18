@@ -19,12 +19,12 @@ import (
 type BaseTransportEvent struct {
 	EventType *string `json:"eventType,omitempty"`
 	// Code for the event classifier can be - ACT (Actual) - PLN (Planned) - EST (Estimated)
-	EventClassifierCode *string `json:"eventClassifierCode,omitempty"`
+	EventClassifierCode    *string                `json:"eventClassifierCode,omitempty"`
 	TransportEventTypeCode TransportEventTypeCode `json:"transportEventTypeCode"`
 	// Reason code for the delay. The SMDG-Delay-Reason-Codes are used for this attribute. The code list can be found at http://www.smdg.org/smdg-code-lists/
 	DelayReasonCode *string `json:"delayReasonCode,omitempty"`
 	// Free text information provided by the vessel operator regarding the reasons for the change in schedule and/or plans to mitigate schedule slippage.
-	ChangeRemark *string `json:"changeRemark,omitempty"`
+	ChangeRemark  *string       `json:"changeRemark,omitempty"`
 	TransportCall TransportCall `json:"transportCall"`
 }
 
@@ -281,5 +281,3 @@ func (v *NullableBaseTransportEvent) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

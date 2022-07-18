@@ -21,12 +21,12 @@ type ReferenceType string
 
 // List of referenceType
 const (
-	FF ReferenceType = "FF"
-	SI ReferenceType = "SI"
-	PO ReferenceType = "PO"
-	CR ReferenceType = "CR"
+	FF  ReferenceType = "FF"
+	SI  ReferenceType = "SI"
+	PO  ReferenceType = "PO"
+	CR  ReferenceType = "CR"
 	AAO ReferenceType = "AAO"
-	EQ ReferenceType = "EQ"
+	EQ  ReferenceType = "EQ"
 )
 
 // All allowed values of ReferenceType enum
@@ -117,4 +117,3 @@ func (v *NullableReferenceType) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

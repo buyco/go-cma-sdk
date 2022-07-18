@@ -15,7 +15,7 @@ import (
 	"encoding/json"
 )
 
-// Vessel describes a floating, sea going structure (mother vessels and feeder vessels) with either an internal or external mode of propulsion designed for the transport of cargo and/or passengers. Ocean vessels are uniquely identified by an IMO number consisting of 7 digits, or alternatively by their AIS signal with an MMSI number. 
+// Vessel describes a floating, sea going structure (mother vessels and feeder vessels) with either an internal or external mode of propulsion designed for the transport of cargo and/or passengers. Ocean vessels are uniquely identified by an IMO number consisting of 7 digits, or alternatively by their AIS signal with an MMSI number.
 type Vessel struct {
 	// The unique reference for a registered Vessel. The reference is the International Maritime Organisation (IMO) number, also sometimes known as the Lloyd&apos;s register code, which does not change during the lifetime of the vessel
 	VesselIMONumber string `json:"vesselIMONumber"`
@@ -26,7 +26,7 @@ type Vessel struct {
 	// A unique alphanumeric identity that belongs to the vessel and is assigned by the International Telecommunication Union (ITU). It consists of a threeletter alphanumeric prefix that indicates nationality, followed by one to four characters to identify the individual vessel. For instance, vessels registered under Denmark are assigned the prefix ranges 5PA-5QZ, OUAOZZ, and XPA-XPZ. The Call Sign changes whenever a vessel changes its flag.
 	VesselCallSignNumber *string `json:"vesselCallSignNumber,omitempty"`
 	// The carrier who is in charge of the vessel operation based on either the SMDG or SCAC code lists
-	VesselOperatorCarrierCode *string `json:"vesselOperatorCarrierCode,omitempty"`
+	VesselOperatorCarrierCode             *string                                `json:"vesselOperatorCarrierCode,omitempty"`
 	VesselOperatorCarrierCodeListProvider *VesselOperatorCarrierCodeListProvider `json:"vesselOperatorCarrierCodeListProvider,omitempty"`
 }
 
@@ -290,5 +290,3 @@ func (v *NullableVessel) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

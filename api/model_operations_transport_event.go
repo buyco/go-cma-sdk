@@ -22,17 +22,17 @@ type OperationsTransportEvent struct {
 	EventID *string `json:"eventID,omitempty"`
 	// The timestamp of when the event was created. <b>NB</b>&#58; This field should be considered Metadata
 	EventCreatedDateTime time.Time `json:"eventCreatedDateTime"`
-	EventType string `json:"eventType"`
+	EventType            string    `json:"eventType"`
 	// Code for the event classifier can be - ACT (Actual) - PLN (Planned) - EST (Estimated)
 	EventClassifierCode string `json:"eventClassifierCode"`
 	// The local date and time, where the event took place or when the event will take place, in ISO 8601 format.
-	EventDateTime time.Time `json:"eventDateTime"`
-	CarrierSpecificData *CarrierSpecificData `json:"carrierSpecificData,omitempty"`
+	EventDateTime          time.Time              `json:"eventDateTime"`
+	CarrierSpecificData    *CarrierSpecificData   `json:"carrierSpecificData,omitempty"`
 	TransportEventTypeCode TransportEventTypeCode `json:"transportEventTypeCode"`
 	// Reason code for the delay. The SMDG-Delay-Reason-Codes are used for this attribute. The code list can be found at http://www.smdg.org/smdg-code-lists/
 	DelayReasonCode *string `json:"delayReasonCode,omitempty"`
 	// Free text information provided by the vessel operator regarding the reasons for the change in schedule and/or plans to mitigate schedule slippage.
-	ChangeRemark *string `json:"changeRemark,omitempty"`
+	ChangeRemark  *string       `json:"changeRemark,omitempty"`
 	TransportCall TransportCall `json:"transportCall"`
 }
 
@@ -401,5 +401,3 @@ func (v *NullableOperationsTransportEvent) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -27,7 +27,7 @@ type BaseEvent struct {
 	// Code for the event classifier. Values can vary depending on eventType
 	EventClassifierCode string `json:"eventClassifierCode"`
 	// The local date and time, where the event took place or when the event will take place, in ISO 8601 format.
-	EventDateTime time.Time `json:"eventDateTime"`
+	EventDateTime       time.Time            `json:"eventDateTime"`
 	CarrierSpecificData *CarrierSpecificData `json:"carrierSpecificData,omitempty"`
 }
 
@@ -270,5 +270,3 @@ func (v *NullableBaseEvent) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

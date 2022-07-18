@@ -21,7 +21,7 @@ type VesselOperatorCarrierCodeListProvider string
 
 // List of vesselOperatorCarrierCodeListProvider
 const (
-	VOCCLP_SMDG VesselOperatorCarrierCodeListProvider = "SMDG"
+	VOCCLP_SMDG  VesselOperatorCarrierCodeListProvider = "SMDG"
 	VOCCLP_NMFTA VesselOperatorCarrierCodeListProvider = "NMFTA"
 )
 
@@ -109,4 +109,3 @@ func (v *NullableVesselOperatorCarrierCodeListProvider) UnmarshalJSON(src []byte
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

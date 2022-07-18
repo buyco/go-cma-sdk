@@ -70,6 +70,7 @@ func (o *LocationAllOf3) HasAddress() bool {
 func (o *LocationAllOf3) SetAddress(v Address) {
 	o.Address.Set(&v)
 }
+
 // SetAddressNil sets the value for Address to be an explicit nil
 func (o *LocationAllOf3) SetAddressNil() {
 	o.Address.Set(nil)
@@ -123,5 +124,3 @@ func (v *NullableLocationAllOf3) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

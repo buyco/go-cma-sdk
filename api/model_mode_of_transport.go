@@ -22,9 +22,9 @@ type ModeOfTransport string
 // List of modeOfTransport
 const (
 	VESSEL ModeOfTransport = "VESSEL"
-	RAIL ModeOfTransport = "RAIL"
-	TRUCK ModeOfTransport = "TRUCK"
-	BARGE ModeOfTransport = "BARGE"
+	RAIL   ModeOfTransport = "RAIL"
+	TRUCK  ModeOfTransport = "TRUCK"
+	BARGE  ModeOfTransport = "BARGE"
 )
 
 // All allowed values of ModeOfTransport enum
@@ -113,4 +113,3 @@ func (v *NullableModeOfTransport) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-

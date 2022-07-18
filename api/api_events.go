@@ -21,18 +21,17 @@ import (
 	"time"
 )
 
-
 type EventsApi interface {
 
 	/*
-	GetMoveOnCommercialCycle Find Commercial events from unique tracking greference.
+		GetMoveOnCommercialCycle Find Commercial events from unique tracking greference.
 
-	Return commercial cycle belonging to provided tracking reference
-<b>Query is not DCSA compliant but Return data follow DCSA TNT 2.2.0 specifications</b>
+		Return commercial cycle belonging to provided tracking reference
+	<b>Query is not DCSA compliant but Return data follow DCSA TNT 2.2.0 specifications</b>
 
-	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@param trackingReference Shipment reference or Equipment identifier
-	@return ApiGetMoveOnCommercialCycleRequest
+		@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+		@param trackingReference Shipment reference or Equipment identifier
+		@return ApiGetMoveOnCommercialCycleRequest
 	*/
 	GetMoveOnCommercialCycle(ctx context.Context, trackingReference string) ApiGetMoveOnCommercialCycleRequest
 
@@ -41,16 +40,16 @@ type EventsApi interface {
 	GetMoveOnCommercialCycleExecute(r ApiGetMoveOnCommercialCycleRequest) ([]SearchMoveOnCommercialCycle200ResponseInner, *http.Response, error)
 
 	/*
-	SearchMoveOnCommercialCycle Find Commercial events.
+		SearchMoveOnCommercialCycle Find Commercial events.
 
-	Returns all events filtered by the queryParameters.
-<b>NB</b>&#58; It is possible to combine queryParameters. When combining queryParameters be aware that it is also possible to make combinations that are mutual contradicting.
-Example&#58; <i>shipmentEventTypeCode=DRFT and equipmentEventTypeCode=GTIN</i>
-Since there is no event that can be a ShipmentEvent <u>and</u> an EquipmentEvent at the same time <b>this will return an empty list</b>!
-<b>Follow DCSA TNT 2.2.0 specifications</b>
+		Returns all events filtered by the queryParameters.
+	<b>NB</b>&#58; It is possible to combine queryParameters. When combining queryParameters be aware that it is also possible to make combinations that are mutual contradicting.
+	Example&#58; <i>shipmentEventTypeCode=DRFT and equipmentEventTypeCode=GTIN</i>
+	Since there is no event that can be a ShipmentEvent <u>and</u> an EquipmentEvent at the same time <b>this will return an empty list</b>!
+	<b>Follow DCSA TNT 2.2.0 specifications</b>
 
-	@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
-	@return ApiSearchMoveOnCommercialCycleRequest
+		@param ctx context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+		@return ApiSearchMoveOnCommercialCycleRequest
 	*/
 	SearchMoveOnCommercialCycle(ctx context.Context) ApiSearchMoveOnCommercialCycleRequest
 
@@ -63,10 +62,10 @@ Since there is no event that can be a ShipmentEvent <u>and</u> an EquipmentEvent
 type EventsApiService service
 
 type ApiGetMoveOnCommercialCycleRequest struct {
-	ctx context.Context
-	ApiService EventsApi
+	ctx               context.Context
+	ApiService        EventsApi
 	trackingReference string
-	behalfOf *string
+	behalfOf          *string
 }
 
 // (Mandatory if you are a Third Party). This field specifies the end customer code you request a rate for. Use our referential API Partner to check if the end customer exists and to get its Partner ID code
@@ -91,8 +90,8 @@ Return commercial cycle belonging to provided tracking reference
 */
 func (a *EventsApiService) GetMoveOnCommercialCycle(ctx context.Context, trackingReference string) ApiGetMoveOnCommercialCycleRequest {
 	return ApiGetMoveOnCommercialCycleRequest{
-		ApiService: a,
-		ctx: ctx,
+		ApiService:        a,
+		ctx:               ctx,
 		trackingReference: trackingReference,
 	}
 }
@@ -101,10 +100,10 @@ func (a *EventsApiService) GetMoveOnCommercialCycle(ctx context.Context, trackin
 //  @return []SearchMoveOnCommercialCycle200ResponseInner
 func (a *EventsApiService) GetMoveOnCommercialCycleExecute(r ApiGetMoveOnCommercialCycleRequest) ([]SearchMoveOnCommercialCycle200ResponseInner, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []SearchMoveOnCommercialCycle200ResponseInner
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []SearchMoveOnCommercialCycle200ResponseInner
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EventsApiService.GetMoveOnCommercialCycle")
@@ -175,13 +174,13 @@ func (a *EventsApiService) GetMoveOnCommercialCycleExecute(r ApiGetMoveOnCommerc
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
-			var v InlineResponseDefault
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.model = v
+		var v InlineResponseDefault
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 
@@ -198,23 +197,23 @@ func (a *EventsApiService) GetMoveOnCommercialCycleExecute(r ApiGetMoveOnCommerc
 }
 
 type ApiSearchMoveOnCommercialCycleRequest struct {
-	ctx context.Context
-	ApiService EventsApi
-	eventType *[]string
-	shipmentEventTypeCode *[]ShipmentEventTypeCode
-	documentTypeCode *[]DocumentTypeCode
-	carrierBookingReference *string
+	ctx                        context.Context
+	ApiService                 EventsApi
+	eventType                  *[]string
+	shipmentEventTypeCode      *[]ShipmentEventTypeCode
+	documentTypeCode           *[]DocumentTypeCode
+	carrierBookingReference    *string
 	transportDocumentReference *string
-	transportEventTypeCode *[]TransportEventTypeCode
-	transportCallID *string
-	vesselIMONumber *string
-	exportVoyageNumber *string
-	carrierServiceCode *string
-	uNLocationCode *string
-	equipmentEventTypeCode *[]EquipmentEventTypeCode
-	equipmentReference *string
-	eventCreatedDateTime *time.Time
-	behalfOf *string
+	transportEventTypeCode     *[]TransportEventTypeCode
+	transportCallID            *string
+	vesselIMONumber            *string
+	exportVoyageNumber         *string
+	carrierServiceCode         *string
+	uNLocationCode             *string
+	equipmentEventTypeCode     *[]EquipmentEventTypeCode
+	equipmentReference         *string
+	eventCreatedDateTime       *time.Time
+	behalfOf                   *string
 }
 
 // The type of event(s) to filter by. Possible values are - SHIPMENT (Shipment events) - TRANSPORT (Transport events) - EQUIPMENT (Equipment events) It is possible to select multiple values by comma (,) separating them. For multiple values the OR-operator is used. For example eventType&#x3D;SHIPMENT,EQUIPMENT matches both Shipment- and Equipment-events. Default value is all event types.
@@ -326,7 +325,7 @@ Since there is no event that can be a ShipmentEvent <u>and</u> an EquipmentEvent
 func (a *EventsApiService) SearchMoveOnCommercialCycle(ctx context.Context) ApiSearchMoveOnCommercialCycleRequest {
 	return ApiSearchMoveOnCommercialCycleRequest{
 		ApiService: a,
-		ctx: ctx,
+		ctx:        ctx,
 	}
 }
 
@@ -334,10 +333,10 @@ func (a *EventsApiService) SearchMoveOnCommercialCycle(ctx context.Context) ApiS
 //  @return []SearchMoveOnCommercialCycle200ResponseInner
 func (a *EventsApiService) SearchMoveOnCommercialCycleExecute(r ApiSearchMoveOnCommercialCycleRequest) ([]SearchMoveOnCommercialCycle200ResponseInner, *http.Response, error) {
 	var (
-		localVarHTTPMethod   = http.MethodGet
-		localVarPostBody     interface{}
-		formFiles            []formFile
-		localVarReturnValue  []SearchMoveOnCommercialCycle200ResponseInner
+		localVarHTTPMethod  = http.MethodGet
+		localVarPostBody    interface{}
+		formFiles           []formFile
+		localVarReturnValue []SearchMoveOnCommercialCycle200ResponseInner
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.ctx, "EventsApiService.SearchMoveOnCommercialCycle")
@@ -449,13 +448,13 @@ func (a *EventsApiService) SearchMoveOnCommercialCycleExecute(r ApiSearchMoveOnC
 			body:  localVarBody,
 			error: localVarHTTPResponse.Status,
 		}
-			var v InlineResponseDefault
-			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
-			if err != nil {
-				newErr.error = err.Error()
-				return localVarReturnValue, localVarHTTPResponse, newErr
-			}
-			newErr.model = v
+		var v InlineResponseDefault
+		err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+		if err != nil {
+			newErr.error = err.Error()
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		newErr.model = v
 		return localVarReturnValue, localVarHTTPResponse, newErr
 	}
 

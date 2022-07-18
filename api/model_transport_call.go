@@ -33,14 +33,14 @@ type TransportCall struct {
 	// The UN Location code specifying where the place is located.
 	UNLocationCode *string `json:"UNLocationCode,omitempty"`
 	// The code used for identifying the specific facility. This code does <b>not</b> include the UN Location Code.
-	FacilityCode *string `json:"facilityCode,omitempty"`
+	FacilityCode             *string                   `json:"facilityCode,omitempty"`
 	FacilityCodeListProvider *FacilityCodeListProvider `json:"facilityCodeListProvider,omitempty"`
-	FacilityTypeCode *FacilityTypeCodeTRN `json:"facilityTypeCode,omitempty"`
+	FacilityTypeCode         *FacilityTypeCodeTRN      `json:"facilityTypeCode,omitempty"`
 	// An alternative way to capture the facility when no standardized DCSA facility code can be found.
-	OtherFacility *string `json:"otherFacility,omitempty"`
-	ModeOfTransport ModeOfTransport `json:"modeOfTransport"`
-	Location NullableLocation `json:"location,omitempty"`
-	Vessel *Vessel `json:"vessel,omitempty"`
+	OtherFacility   *string          `json:"otherFacility,omitempty"`
+	ModeOfTransport ModeOfTransport  `json:"modeOfTransport"`
+	Location        NullableLocation `json:"location,omitempty"`
+	Vessel          *Vessel          `json:"vessel,omitempty"`
 }
 
 // NewTransportCall instantiates a new TransportCall object
@@ -466,6 +466,7 @@ func (o *TransportCall) HasLocation() bool {
 func (o *TransportCall) SetLocation(v Location) {
 	o.Location.Set(&v)
 }
+
 // SetLocationNil sets the value for Location to be an explicit nil
 func (o *TransportCall) SetLocationNil() {
 	o.Location.Set(nil)
@@ -590,5 +591,3 @@ func (v *NullableTransportCall) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

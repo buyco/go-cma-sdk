@@ -69,6 +69,7 @@ func (o *TransportCallAllOf13) HasLocation() bool {
 func (o *TransportCallAllOf13) SetLocation(v Location) {
 	o.Location.Set(&v)
 }
+
 // SetLocationNil sets the value for Location to be an explicit nil
 func (o *TransportCallAllOf13) SetLocationNil() {
 	o.Location.Set(nil)
@@ -122,5 +123,3 @@ func (v *NullableTransportCallAllOf13) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

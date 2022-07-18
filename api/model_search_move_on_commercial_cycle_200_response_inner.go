@@ -19,7 +19,7 @@ import (
 // SearchMoveOnCommercialCycle200ResponseInner struct for SearchMoveOnCommercialCycle200ResponseInner
 type SearchMoveOnCommercialCycle200ResponseInner struct {
 	EquipmentEvent *EquipmentEvent
-	ShipmentEvent *ShipmentEvent
+	ShipmentEvent  *ShipmentEvent
 	TransportEvent *TransportEvent
 }
 
@@ -27,7 +27,7 @@ type SearchMoveOnCommercialCycle200ResponseInner struct {
 func (dst *SearchMoveOnCommercialCycle200ResponseInner) UnmarshalJSON(data []byte) error {
 	var err error
 	// try to unmarshal JSON data into EquipmentEvent
-	err = json.Unmarshal(data, &dst.EquipmentEvent);
+	err = json.Unmarshal(data, &dst.EquipmentEvent)
 	if err == nil && dst.EquipmentEvent.GetEventType() == "EQUIPMENT" {
 		jsonEquipmentEvent, _ := json.Marshal(dst.EquipmentEvent)
 		if string(jsonEquipmentEvent) == "{}" { // empty struct
@@ -40,7 +40,7 @@ func (dst *SearchMoveOnCommercialCycle200ResponseInner) UnmarshalJSON(data []byt
 	}
 
 	// try to unmarshal JSON data into ShipmentEvent
-	err = json.Unmarshal(data, &dst.ShipmentEvent);
+	err = json.Unmarshal(data, &dst.ShipmentEvent)
 	if err == nil && dst.ShipmentEvent.GetEventType() == "SHIPMENT" {
 		jsonShipmentEvent, _ := json.Marshal(dst.ShipmentEvent)
 		if string(jsonShipmentEvent) == "{}" { // empty struct
@@ -53,7 +53,7 @@ func (dst *SearchMoveOnCommercialCycle200ResponseInner) UnmarshalJSON(data []byt
 	}
 
 	// try to unmarshal JSON data into TransportEvent
-	err = json.Unmarshal(data, &dst.TransportEvent);
+	err = json.Unmarshal(data, &dst.TransportEvent)
 	if err == nil && dst.TransportEvent.GetEventType() == "TRANSPORT" {
 		jsonTransportEvent, _ := json.Marshal(dst.TransportEvent)
 		if string(jsonTransportEvent) == "{}" { // empty struct
@@ -119,5 +119,3 @@ func (v *NullableSearchMoveOnCommercialCycle200ResponseInner) UnmarshalJSON(src 
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

@@ -20,8 +20,8 @@ type ModelError struct {
 	// The HTTP request method type
 	HttpMethod string `json:"httpMethod"`
 	// The request URI.
-	RequestUri string `json:"requestUri"`
-	Errors []SubErrorsInner `json:"errors"`
+	RequestUri string           `json:"requestUri"`
+	Errors     []SubErrorsInner `json:"errors"`
 	// The HTTP status code
 	StatusCode int32 `json:"statusCode"`
 	// The textual representation of the response status.
@@ -255,5 +255,3 @@ func (v *NullableModelError) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

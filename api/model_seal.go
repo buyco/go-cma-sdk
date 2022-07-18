@@ -18,9 +18,9 @@ import (
 // Seal addresses the seal-related information associated with the shipment equipment. A seal is put on a shipment equipment once it is loaded. This seal is meant to stay on until the shipment equipment reaches its final destination.
 type Seal struct {
 	// Identifies a seal affixed to the container.
-	SealNumber string `json:"sealNumber"`
+	SealNumber string      `json:"sealNumber"`
 	SealSource *SealSource `json:"sealSource,omitempty"`
-	SealType SealType `json:"sealType"`
+	SealType   SealType    `json:"sealType"`
 }
 
 // NewSeal instantiates a new Seal object
@@ -171,5 +171,3 @@ func (v *NullableSeal) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-
