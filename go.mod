@@ -1,4 +1,4 @@
-module github.com/buyco/go-cma-sdk
+module github.com/buyco/go-cma-sdk/v2
 
 go 1.17
 
