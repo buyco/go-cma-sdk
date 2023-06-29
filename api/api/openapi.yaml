@@ -284,6 +284,28 @@ paths:
         schema:
           type: string
         style: form
+      - description: Maximum number of items to return.
+        example: 100
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 100
+          format: int32
+          minimum: 1
+          type: integer
+        style: form
+      - description: "A server generated value to specify a specific point in a collection\
+          \ result, used for pagination."
+        example: fE9mZnNldHw9MTAmbGltaXQ9MTA=
+        explode: true
+        in: query
+        name: cursor
+        required: false
+        schema:
+          type: string
+        style: form
       responses:
         "200":
           content:
@@ -296,6 +318,16 @@ paths:
           headers:
             API-Version:
               $ref: '#/components/headers/API-Version'
+            Current-Page:
+              $ref: '#/components/headers/Current-Page'
+            Next-Page:
+              $ref: '#/components/headers/Next-Page'
+            Prev-Page:
+              $ref: '#/components/headers/Prev-Page'
+            Last-Page:
+              $ref: '#/components/headers/Last-Page'
+            First-Page:
+              $ref: '#/components/headers/First-Page'
         default:
           content:
             application/json:
@@ -343,6 +375,28 @@ paths:
         schema:
           type: string
         style: form
+      - description: Maximum number of items to return.
+        example: 100
+        explode: true
+        in: query
+        name: limit
+        required: false
+        schema:
+          default: 100
+          format: int32
+          minimum: 1
+          type: integer
+        style: form
+      - description: "A server generated value to specify a specific point in a collection\
+          \ result, used for pagination."
+        example: fE9mZnNldHw9MTAmbGltaXQ9MTA=
+        explode: true
+        in: query
+        name: cursor
+        required: false
+        schema:
+          type: string
+        style: form
       responses:
         "200":
           content:
@@ -355,6 +409,16 @@ paths:
           headers:
             API-Version:
               $ref: '#/components/headers/API-Version'
+            Current-Page:
+              $ref: '#/components/headers/Current-Page'
+            Next-Page:
+              $ref: '#/components/headers/Next-Page'
+            Prev-Page:
+              $ref: '#/components/headers/Prev-Page'
+            Last-Page:
+              $ref: '#/components/headers/Last-Page'
+            First-Page:
+              $ref: '#/components/headers/First-Page'
         default:
           content:
             application/json:
@@ -384,6 +448,50 @@ components:
       explode: false
       schema:
         example: 2.2.0
+        type: string
+      style: simple
+    Current-Page:
+      description: A link to the current page.
+      explode: false
+      required: true
+      schema:
+        example: fE9mZnNldHw9MCZsaW1pdD01
+        type: string
+      style: simple
+    Next-Page:
+      description: A link to the next page. Next-Page header link MAY be omitted if
+        the current page is the last page.
+      explode: false
+      required: false
+      schema:
+        example: fE9mZnNldHw9NSZsaW1pdD01
+        type: string
+      style: simple
+    Prev-Page:
+      description: A link to the previous page. Previous-Page header link MAY be omitted
+        if the current page is the first page.
+      explode: false
+      required: false
+      schema:
+        example: fE9mZnNldHw9MCZsaW1pdD01
+        type: string
+      style: simple
+    Last-Page:
+      description: A link to the last page. Last-Page header link MAY be omitted if
+        the current page is the last page.
+      explode: false
+      required: false
+      schema:
+        example: fE9mZnNldHw9NTkmbGltaXQ9NQ==
+        type: string
+      style: simple
+    First-Page:
+      description: A link to thefirst page. First-Page header link MAY be omitted
+        if current page is the first page.
+      explode: false
+      required: false
+      schema:
+        example: fE9mZnNldHw9NjAmbGltaXQ9NQ==
         type: string
       style: simple
   schemas:

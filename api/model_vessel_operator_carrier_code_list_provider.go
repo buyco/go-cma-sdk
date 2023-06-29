@@ -21,8 +21,8 @@ type VesselOperatorCarrierCodeListProvider string
 
 // List of vesselOperatorCarrierCodeListProvider
 const (
-	VOCCLP_SMDG  VesselOperatorCarrierCodeListProvider = "SMDG"
-	VOCCLP_NMFTA VesselOperatorCarrierCodeListProvider = "NMFTA"
+	SMDG  VesselOperatorCarrierCodeListProvider = "SMDG"
+	NMFTA VesselOperatorCarrierCodeListProvider = "NMFTA"
 )
 
 // All allowed values of VesselOperatorCarrierCodeListProvider enum

@@ -14,6 +14,7 @@ package api
 import (
 	"encoding/json"
 	"fmt"
+	"time"
 )
 
 // SearchMoveOnCommercialCycle200ResponseInner struct for SearchMoveOnCommercialCycle200ResponseInner
@@ -28,7 +29,7 @@ func (dst *SearchMoveOnCommercialCycle200ResponseInner) UnmarshalJSON(data []byt
 	var err error
 	// try to unmarshal JSON data into EquipmentEvent
 	err = json.Unmarshal(data, &dst.EquipmentEvent)
-	if err == nil && dst.EquipmentEvent.GetEventType() == "EQUIPMENT" {
+	if err == nil {
 		jsonEquipmentEvent, _ := json.Marshal(dst.EquipmentEvent)
 		if string(jsonEquipmentEvent) == "{}" { // empty struct
 			dst.EquipmentEvent = nil
@@ -41,7 +42,7 @@ func (dst *SearchMoveOnCommercialCycle200ResponseInner) UnmarshalJSON(data []byt
 
 	// try to unmarshal JSON data into ShipmentEvent
 	err = json.Unmarshal(data, &dst.ShipmentEvent)
-	if err == nil && dst.ShipmentEvent.GetEventType() == "SHIPMENT" {
+	if err == nil {
 		jsonShipmentEvent, _ := json.Marshal(dst.ShipmentEvent)
 		if string(jsonShipmentEvent) == "{}" { // empty struct
 			dst.ShipmentEvent = nil
@@ -54,7 +55,7 @@ func (dst *SearchMoveOnCommercialCycle200ResponseInner) UnmarshalJSON(data []byt
 
 	// try to unmarshal JSON data into TransportEvent
 	err = json.Unmarshal(data, &dst.TransportEvent)
-	if err == nil && dst.TransportEvent.GetEventType() == "TRANSPORT" {
+	if err == nil {
 		jsonTransportEvent, _ := json.Marshal(dst.TransportEvent)
 		if string(jsonTransportEvent) == "{}" { // empty struct
 			dst.TransportEvent = nil
@@ -64,6 +65,7 @@ func (dst *SearchMoveOnCommercialCycle200ResponseInner) UnmarshalJSON(data []byt
 	} else {
 		dst.TransportEvent = nil
 	}
+
 	return fmt.Errorf("Data failed to match schemas in anyOf(SearchMoveOnCommercialCycle200ResponseInner)")
 }
 
