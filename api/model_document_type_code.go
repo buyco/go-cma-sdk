@@ -21,17 +21,17 @@ type DocumentTypeCode string
 
 // List of documentTypeCode
 const (
-	CBR DocumentTypeCode = "CBR"
-	BKG DocumentTypeCode = "BKG"
-	SHI DocumentTypeCode = "SHI"
-	SRM DocumentTypeCode = "SRM"
-	TRD DocumentTypeCode = "TRD"
-	ARN DocumentTypeCode = "ARN"
-	VGM DocumentTypeCode = "VGM"
-	CAS DocumentTypeCode = "CAS"
-	CUS DocumentTypeCode = "CUS"
-	DGD DocumentTypeCode = "DGD"
-	OOG DocumentTypeCode = "OOG"
+	DTC_CBR DocumentTypeCode = "CBR"
+	DTC_BKG DocumentTypeCode = "BKG"
+	DTC_SHI DocumentTypeCode = "SHI"
+	DTC_SRM DocumentTypeCode = "SRM"
+	DTC_TRD DocumentTypeCode = "TRD"
+	DTC_ARN DocumentTypeCode = "ARN"
+	DTC_VGM DocumentTypeCode = "VGM"
+	DTC_CAS DocumentTypeCode = "CAS"
+	DTC_CUS DocumentTypeCode = "CUS"
+	DTC_DGD DocumentTypeCode = "DGD"
+	DTC_OOG DocumentTypeCode = "OOG"
 )
 
 // All allowed values of DocumentTypeCode enum

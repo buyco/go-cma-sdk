@@ -14,7 +14,6 @@ package api
 import (
 	"encoding/json"
 	"fmt"
-	"time"
 )
 
 // SearchMoveOnCommercialCycle200ResponseInner struct for SearchMoveOnCommercialCycle200ResponseInner
@@ -66,7 +65,7 @@ func (dst *SearchMoveOnCommercialCycle200ResponseInner) UnmarshalJSON(data []byt
 		dst.TransportEvent = nil
 	}
 
-	return fmt.Errorf("Data failed to match schemas in anyOf(SearchMoveOnCommercialCycle200ResponseInner)")
+	return fmt.Errorf("data failed to match schemas in anyOf(SearchMoveOnCommercialCycle200ResponseInner)")
 }
 
 // Marshal data from the first non-nil pointers in the struct to JSON
