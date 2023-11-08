@@ -39,3 +39,4 @@ vendor
 *.coverprofile
 *.test
 coverage.txt
+coverprofile.out

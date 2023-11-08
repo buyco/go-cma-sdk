@@ -11,7 +11,7 @@ Method | HTTP request | Description
 
 ## GetMoveOnCommercialCycle
 
-> []SearchMoveOnCommercialCycle200ResponseInner GetMoveOnCommercialCycle(ctx, trackingReference).BehalfOf(behalfOf).Execute()
+> []SearchMoveOnCommercialCycle200ResponseInner GetMoveOnCommercialCycle(ctx, trackingReference).BehalfOf(behalfOf).Limit(limit).Cursor(cursor).Execute()
 
 Find Commercial events from unique tracking greference.
 
@@ -32,10 +32,12 @@ import (
 func main() {
     trackingReference := "trackingReference_example" // string | Shipment reference or Equipment identifier
     behalfOf := "00002334567" // string | (Mandatory if you are a Third Party). This field specifies the end customer code you request a rate for. Use our referential API Partner to check if the end customer exists and to get its Partner ID code (optional)
+    limit := int32(100) // int32 | Maximum number of items to return. (optional) (default to 100)
+    cursor := "fE9mZnNldHw9MTAmbGltaXQ9MTA=" // string | A server generated value to specify a specific point in a collection result, used for pagination. (optional)
 
     configuration := openapiclient.NewConfiguration()
     apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.EventsApi.GetMoveOnCommercialCycle(context.Background(), trackingReference).BehalfOf(behalfOf).Execute()
+    resp, r, err := apiClient.EventsApi.GetMoveOnCommercialCycle(context.Background(), trackingReference).BehalfOf(behalfOf).Limit(limit).Cursor(cursor).Execute()
     if err != nil {
         fmt.Fprintf(os.Stderr, "Error when calling `EventsApi.GetMoveOnCommercialCycle``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -62,6 +64,8 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
 
  **behalfOf** | **string** | (Mandatory if you are a Third Party). This field specifies the end customer code you request a rate for. Use our referential API Partner to check if the end customer exists and to get its Partner ID code | 
+ **limit** | **int32** | Maximum number of items to return. | [default to 100]
+ **cursor** | **string** | A server generated value to specify a specific point in a collection result, used for pagination. | 
 
 ### Return type
 
@@ -83,7 +87,7 @@ Name | Type | Description  | Notes
 
 ## SearchMoveOnCommercialCycle
 
-> []SearchMoveOnCommercialCycle200ResponseInner SearchMoveOnCommercialCycle(ctx).EventType(eventType).ShipmentEventTypeCode(shipmentEventTypeCode).DocumentTypeCode(documentTypeCode).CarrierBookingReference(carrierBookingReference).TransportDocumentReference(transportDocumentReference).TransportEventTypeCode(transportEventTypeCode).TransportCallID(transportCallID).VesselIMONumber(vesselIMONumber).ExportVoyageNumber(exportVoyageNumber).CarrierServiceCode(carrierServiceCode).UNLocationCode(uNLocationCode).EquipmentEventTypeCode(equipmentEventTypeCode).EquipmentReference(equipmentReference).EventCreatedDateTime(eventCreatedDateTime).BehalfOf(behalfOf).Execute()
+> []SearchMoveOnCommercialCycle200ResponseInner SearchMoveOnCommercialCycle(ctx).EventType(eventType).ShipmentEventTypeCode(shipmentEventTypeCode).DocumentTypeCode(documentTypeCode).CarrierBookingReference(carrierBookingReference).TransportDocumentReference(transportDocumentReference).TransportEventTypeCode(transportEventTypeCode).TransportCallID(transportCallID).VesselIMONumber(vesselIMONumber).ExportVoyageNumber(exportVoyageNumber).CarrierServiceCode(carrierServiceCode).UNLocationCode(uNLocationCode).EquipmentEventTypeCode(equipmentEventTypeCode).EquipmentReference(equipmentReference).EventCreatedDateTime(eventCreatedDateTime).BehalfOf(behalfOf).Limit(limit).Cursor(cursor).Execute()
 
 Find Commercial events.
 
@@ -118,10 +122,12 @@ func main() {
     equipmentReference := "equipmentReference_example" // string | Will filter by the unique identifier for the equipment, which should follow the BIC ISO Container Identification Number where possible. Specifying this filter will only return events related to this particular equipmentReference (optional)
     eventCreatedDateTime := time.Now() // time.Time | Limit the result based on the creating date of the event. It is possible to use operators on this query parameter. This is done by adding a colon followed by an operator at the end of the queryParameterName (before the =) <i>eventCreatedDateTime<b>&#58;gte</b>=2021-04-01T14&#58;12&#58;56+01&#58;00</i> would result in all events created &#8805; 2021-04-01T14&#58;12&#58;56+01&#58;00 The following operators are supported - &#58;gte (&#8805; Greater than or equal) - &#58;gt (&#62; Greater than) - &#58;lte (&#8804; Less than or equal) - &#58;lt (&#60; Less than) - &#58;eq (&#61; Equal to) If no operator is provided, a <b>strictly equal</b> is used (this is equivalent to <b>&#58;eq</b> operator). (optional)
     behalfOf := "00002334567" // string | (Mandatory if you are a Third Party). This field specifies the end customer code you request a rate for. Use our referential API Partner to check if the end customer exists and to get its Partner ID code -- Not a standard DCSA attribute (optional)
+    limit := int32(100) // int32 | Maximum number of items to return. (optional) (default to 100)
+    cursor := "fE9mZnNldHw9MTAmbGltaXQ9MTA=" // string | A server generated value to specify a specific point in a collection result, used for pagination. (optional)
 
     configuration := openapiclient.NewConfiguration()
     apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.EventsApi.SearchMoveOnCommercialCycle(context.Background()).EventType(eventType).ShipmentEventTypeCode(shipmentEventTypeCode).DocumentTypeCode(documentTypeCode).CarrierBookingReference(carrierBookingReference).TransportDocumentReference(transportDocumentReference).TransportEventTypeCode(transportEventTypeCode).TransportCallID(transportCallID).VesselIMONumber(vesselIMONumber).ExportVoyageNumber(exportVoyageNumber).CarrierServiceCode(carrierServiceCode).UNLocationCode(uNLocationCode).EquipmentEventTypeCode(equipmentEventTypeCode).EquipmentReference(equipmentReference).EventCreatedDateTime(eventCreatedDateTime).BehalfOf(behalfOf).Execute()
+    resp, r, err := apiClient.EventsApi.SearchMoveOnCommercialCycle(context.Background()).EventType(eventType).ShipmentEventTypeCode(shipmentEventTypeCode).DocumentTypeCode(documentTypeCode).CarrierBookingReference(carrierBookingReference).TransportDocumentReference(transportDocumentReference).TransportEventTypeCode(transportEventTypeCode).TransportCallID(transportCallID).VesselIMONumber(vesselIMONumber).ExportVoyageNumber(exportVoyageNumber).CarrierServiceCode(carrierServiceCode).UNLocationCode(uNLocationCode).EquipmentEventTypeCode(equipmentEventTypeCode).EquipmentReference(equipmentReference).EventCreatedDateTime(eventCreatedDateTime).BehalfOf(behalfOf).Limit(limit).Cursor(cursor).Execute()
     if err != nil {
         fmt.Fprintf(os.Stderr, "Error when calling `EventsApi.SearchMoveOnCommercialCycle``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -157,6 +163,8 @@ Name | Type | Description  | Notes
  **equipmentReference** | **string** | Will filter by the unique identifier for the equipment, which should follow the BIC ISO Container Identification Number where possible. Specifying this filter will only return events related to this particular equipmentReference | 
  **eventCreatedDateTime** | **time.Time** | Limit the result based on the creating date of the event. It is possible to use operators on this query parameter. This is done by adding a colon followed by an operator at the end of the queryParameterName (before the &#x3D;) &lt;i&gt;eventCreatedDateTime&lt;b&gt;&amp;#58;gte&lt;/b&gt;&#x3D;2021-04-01T14&amp;#58;12&amp;#58;56+01&amp;#58;00&lt;/i&gt; would result in all events created &amp;#8805; 2021-04-01T14&amp;#58;12&amp;#58;56+01&amp;#58;00 The following operators are supported - &amp;#58;gte (&amp;#8805; Greater than or equal) - &amp;#58;gt (&amp;#62; Greater than) - &amp;#58;lte (&amp;#8804; Less than or equal) - &amp;#58;lt (&amp;#60; Less than) - &amp;#58;eq (&amp;#61; Equal to) If no operator is provided, a &lt;b&gt;strictly equal&lt;/b&gt; is used (this is equivalent to &lt;b&gt;&amp;#58;eq&lt;/b&gt; operator). | 
  **behalfOf** | **string** | (Mandatory if you are a Third Party). This field specifies the end customer code you request a rate for. Use our referential API Partner to check if the end customer exists and to get its Partner ID code -- Not a standard DCSA attribute | 
+ **limit** | **int32** | Maximum number of items to return. | [default to 100]
+ **cursor** | **string** | A server generated value to specify a specific point in a collection result, used for pagination. | 
 
 ### Return type
 

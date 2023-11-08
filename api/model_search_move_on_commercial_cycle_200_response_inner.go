@@ -64,7 +64,8 @@ func (dst *SearchMoveOnCommercialCycle200ResponseInner) UnmarshalJSON(data []byt
 	} else {
 		dst.TransportEvent = nil
 	}
-	return fmt.Errorf("Data failed to match schemas in anyOf(SearchMoveOnCommercialCycle200ResponseInner)")
+
+	return fmt.Errorf("data failed to match schemas in anyOf(SearchMoveOnCommercialCycle200ResponseInner)")
 }
 
 // Marshal data from the first non-nil pointers in the struct to JSON
