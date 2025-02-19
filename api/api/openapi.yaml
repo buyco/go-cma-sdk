@@ -34,16 +34,18 @@ info:
   x-dcsaVersion: 2.2.0
 servers:
 - description: CMA CGM Gateway PROD API
-  url: https://apis.cma-cgm.net/operation/trackandtrace/v1
+  url: https://apis.cma-cgm.net
 - description: CMA CGM Gateway PreProd API
-  url: https://apis-pre.cma-cgm.net/operation/trackandtrace/v1
+  url: https://apis-pre.cma-cgm.net
 - description: CMA CGM Gateway UAT
-  url: https://apis-uat.cma-cgm.net/operation/trackandtrace/v1
+  url: https://apis-uat.cma-cgm.net
 tags:
 - description: Event operations - Public track and trace methods of a commercial cycle
   name: Events
+- description: Methods related to subscription rules
+  name: Subscription Rules
 paths:
-  /events:
+  /operation/trackandtrace/v1/events:
     get:
       description: |-
         Returns all events filtered by the queryParameters.
@@ -372,7 +374,7 @@ paths:
       summary: Find Commercial events.
       tags:
       - Events
-  /events/{trackingReference}:
+  /operation/trackandtrace/v1/events/{trackingReference}:
     get:
       description: |-
         Return commercial cycle belonging to provided tracking reference
@@ -459,6 +461,185 @@ paths:
       summary: Find Commercial events from unique tracking reference.
       tags:
       - Events
+  /eventhub/subscription/v1/subscriptionRules:
+    delete:
+      description: delete a subscription rule
+      operationId: deleteSubscriptionRule
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubscriptionRuleToDelete'
+        description: the subscription rule to delete for a subscriber
+        required: true
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+          description: Successful operation
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fault'
+          description: hereunder fault datatype description<br> Reason - 400 Bad request<br>
+            Code - SUB_ERR Description - bad request parameter unknown
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fault'
+          description: hereunder fault datatype description<br> Reason - 403 Missing
+            rights<br> Code - SUB_ERR Description - Missing rights for subscription
+            rules
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fault'
+          description: hereunder fault datatype description <br>  Reason -  500 Internal
+            error <br>  Code - SUB_ERR Description - Subscription service unavailable
+      security:
+      - oAuth2:
+        - subscriptionrule:read:be
+      summary: Delete a subscription rule
+      tags:
+      - Subscription Rules
+    get:
+      description: List event subscription rules.
+      operationId: listSubscriptionRules
+      parameters:
+      - description: Pagination parameter. default 0-49. Maximum rows to return 50
+        explode: false
+        in: header
+        name: range
+        required: false
+        schema:
+          default: 0-49
+          type: string
+        style: simple
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/SubscriptionRule'
+                type: array
+          description: Successful operation
+          headers:
+            Content-Range:
+              description: Returned range.
+              explode: false
+              schema:
+                type: string
+              style: simple
+            Accept-Range:
+              description: Max accepted range.
+              explode: false
+              schema:
+                type: string
+              style: simple
+        "206":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/SubscriptionRule'
+                type: array
+          description: Successful Operation but partial content
+          headers:
+            Content-Range:
+              description: Returned range.
+              explode: false
+              schema:
+                type: string
+              style: simple
+            Accept-Range:
+              description: Max accepted range.
+              explode: false
+              schema:
+                type: string
+              style: simple
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fault'
+          description: hereunder fault datatype description<br> Reason - 400 Bad request<br>
+            Code - SUB_ERR Description - bad request parameter unknown
+        "416":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fault'
+          description: hereunder fault datatype description<br> Reason - 416 Range
+            Not Satisfiable<br> Code - SUB_ERR Description -  No rules for range
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fault'
+          description: hereunder fault datatype description <br>  Reason -  500 Internal
+            error <br>  Code - SUB_ERR Description - Subscription service unavailable
+      security:
+      - oAuth2:
+        - subscriptionrule:read:be
+      summary: List event subscription rules
+      tags:
+      - Subscription Rules
+    post:
+      description: Create an event subscription rule which is composed as follow <ui>
+        <li>List of equipments to be tracked</li> <li>List of shipments to be tracked</li>
+        <li>List of contracts to be tracked</li> <li>List of CVS services to be tracked
+        (by default 365 days) </li> <li>Electronic channel where the booking request
+        is submitted</li> <li>Start date and end date to define rule validity period
+        (by default 120 days).</li> </ui>
+      operationId: createSubscriptionRule
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubscriptionRule'
+        description: The subscription rule object
+        required: true
+      responses:
+        "200":
+          content:
+            text/plain:
+              schema:
+                type: string
+          description: Successful operation
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fault'
+          description: hereunder fault datatype description<br> Reason - 400 Bad request<br>
+            Code - SUB_ERR Description - bad request parameter unknown
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fault'
+          description: hereunder fault datatype description<br> Reason - 403 Missing
+            rights<br> Code - SUB_ERR Description - Missing rights for subscription
+            rules
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Fault'
+          description: hereunder fault datatype description <br>  Reason -  500 Internal
+            error <br>  Code - SUB_ERR Description - Subscription service unavailable
+      security:
+      - oAuth2:
+        - subscriptionrule:write:be
+      summary: Create an event subscription rule
+      tags:
+      - Subscription Rules
 components:
   headers:
     API-Version:
@@ -514,6 +695,208 @@ components:
         type: string
       style: simple
   schemas:
+    SubscriptionRule:
+      example:
+        shipmentReferences:
+        - shipmentReferences
+        - shipmentReferences
+        equipmentReferences:
+        - equipmentReferences
+        - equipmentReferences
+        endDate: 2000-01-23
+        cvsServices:
+        - shippingCompany: "0001"
+          serviceStartDate: 2000-01-23
+          serviceCode: FAL
+          carrierServiceCode: FALCNC
+          serviceEndDate: 2000-01-23
+        - shippingCompany: "0001"
+          serviceStartDate: 2000-01-23
+          serviceCode: FAL
+          carrierServiceCode: FALCNC
+          serviceEndDate: 2000-01-23
+        electronicChannel: electronicChannel
+        vas:
+        - vas
+        - vas
+        contractReferences:
+        - contractReferences
+        - contractReferences
+        startDate: 2000-01-23
+      properties:
+        equipmentReferences:
+          description: List of equipment references
+          items:
+            description: "The unique identifier for the equipment, which should follow\
+              \ the BIC ISO Container Identification Number where possible."
+            type: string
+          type: array
+        vas:
+          description: List of vas
+          items:
+            description: Value Added Services.
+            type: string
+          type: array
+        shipmentReferences:
+          description: List of shipment references
+          items:
+            description: CMA CGM shipment reference
+            type: string
+          type: array
+        contractReferences:
+          description: List of contract references
+          items:
+            description: CMA CGM quotation / US contract reference
+            type: string
+          type: array
+        cvsServices:
+          description: |
+            <br> List of (serviceCode only OR serviceCode + shippingCompany) OR carrierServiceCode to create.</br>
+            Either serviceCode OR carrierServiceCode should be set per cvs service rule.</br>
+            If serviceCode only is provided => the subscription will be applied to the service code only.
+            If serviceCode + shippingCompany is provided => the subscription will be applied to the carrier service code of the specified shippingCompany.
+            If carrierServiceCode is provided => the subscription will be applied to the carrier service code.
+          items:
+            $ref: '#/components/schemas/CvsService'
+          type: array
+        electronicChannel:
+          description: "Dedicated channel where the booking request is submitted,\
+            \ allowed values -> API, WEB, INTTRA_ACT, INTTRA_LINK"
+          type: string
+        startDate:
+          description: "Start date of the subscription. By default, today"
+          format: date
+          type: string
+        endDate:
+          description: "End date of the subscription. By default, today + 120 days\
+            \ / today + 365 days for electronic channel"
+          format: date
+          type: string
+      type: object
+    CvsService:
+      example:
+        shippingCompany: "0001"
+        serviceStartDate: 2000-01-23
+        serviceCode: FAL
+        carrierServiceCode: FALCNC
+        serviceEndDate: 2000-01-23
+      properties:
+        serviceCode:
+          description: Service code of voyage
+          example: FAL
+          type: string
+        carrierServiceCode:
+          description: Service code for a shipping company
+          example: FALCNC
+          type: string
+        shippingCompany:
+          description: Shipping company code
+          example: "0001"
+          type: string
+        serviceStartDate:
+          description: "Start date of the service subscription. By default, today"
+          format: date
+          type: string
+        serviceEndDate:
+          description: "End date of the service subscription. By default, today +\
+            \ 1 year"
+          format: date
+          type: string
+      type: object
+    SubscriptionRuleToDelete:
+      example:
+        shipmentReferences:
+        - shipmentReferences
+        - shipmentReferences
+        equipmentReferences:
+        - equipmentReferences
+        - equipmentReferences
+        cvsServicesToDelete:
+        - shippingCompany: "0001"
+          serviceCode: FAL
+          carrierServiceCode: FALCNC
+        - shippingCompany: "0001"
+          serviceCode: FAL
+          carrierServiceCode: FALCNC
+        electronicChannels:
+        - electronicChannels
+        - electronicChannels
+        contractReferences:
+        - contractReferences
+        - contractReferences
+      properties:
+        cvsServicesToDelete:
+          description: |
+            <br> List of (serviceCode only OR serviceCode + shippingCompany) OR carrierServiceCode to delete.</br>
+            Either serviceCode OR carrierServiceCode should be set per cvs service rule.</br>
+            If serviceCode only is provided => the unsubscription will be applied to the service code only.
+            If serviceCode + shippingCompany is provided => the unsubscription will be applied to the carrier service code of the specified shippingCompany.
+            If carrierServiceCode is provided => the unsubscription will be applied to the carrier service code.
+          items:
+            $ref: '#/components/schemas/CvsServiceToDelete'
+          type: array
+        equipmentReferences:
+          description: List of equipment references
+          items:
+            description: "The unique identifier for the equipment, which should follow\
+              \ the BIC ISO Container Identification Number where possible."
+            type: string
+          type: array
+        shipmentReferences:
+          description: List of shipment references
+          items:
+            description: CMA CGM shipment reference
+            type: string
+          type: array
+        contractReferences:
+          description: List of contract references
+          items:
+            description: CMA CGM quotation / US contract reference
+            type: string
+          type: array
+        electronicChannels:
+          description: List of Dedicated channels
+          items:
+            description: "Dedicated channel where the booking request is submitted,\
+              \ allowed values -> API, WEB, INTTRA_ACT, INTTRA_LINK"
+            type: string
+          type: array
+      type: object
+    CvsServiceToDelete:
+      example:
+        shippingCompany: "0001"
+        serviceCode: FAL
+        carrierServiceCode: FALCNC
+      properties:
+        serviceCode:
+          description: Service code to delete
+          example: FAL
+          type: string
+        carrierServiceCode:
+          description: Service code for a shipping company to delete
+          example: FALCNC
+          type: string
+        shippingCompany:
+          description: Shipping company code
+          example: "0001"
+          type: string
+      type: object
+    Fault:
+      properties:
+        reason:
+          description: "HTTP error or Free text such as  Database Not Available ,\
+            \ Invalid Credential, Mandatory, Invalid Format,  Invalid Length, ForbiddenValue,\
+            \ Invalid Data,..."
+          type: string
+        code:
+          description: "Error Id,  Server Application error ID, Oracle error Id, ...."
+          type: string
+        description:
+          description: Human-readable error description including Data and Value
+          type: string
+      required:
+      - reason
+      type: object
     carrierBookingReference:
       description: A set of unique characters provided by carrier to identify a booking.
       example: ABC709951
@@ -1805,6 +2188,8 @@ components:
           scopes:
             tandtcommercial:read:be: read access for private enpoints
             tandtpublic:read:be: read access for public enpoints
+            subscriptionrule:read:be: read access
+            subscriptionrule:write:be: write access
           tokenUrl: https://auth.cma-cgm.com/as/token.oauth2
       type: oauth2
     ApiKeyAuth:
