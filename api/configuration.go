@@ -105,15 +105,15 @@ func NewConfiguration() *Configuration {
 		Debug:         false,
 		Servers: ServerConfigurations{
 			{
-				URL:         "https://apis.cma-cgm.net/operation/trackandtrace/v1",
+				URL:         "https://apis.cma-cgm.net",
 				Description: "CMA CGM Gateway PROD API",
 			},
 			{
-				URL:         "https://apis-pre.cma-cgm.net/operation/trackandtrace/v1",
+				URL:         "https://apis-pre.cma-cgm.net",
 				Description: "CMA CGM Gateway PreProd API",
 			},
 			{
-				URL:         "https://apis-uat.cma-cgm.net/operation/trackandtrace/v1",
+				URL:         "https://apis-uat.cma-cgm.net",
 				Description: "CMA CGM Gateway UAT",
 			},
 		},

@@ -82,12 +82,15 @@ ctx = context.WithValue(context.Background(), api.ContextOperationServerVariable
 
 ## Documentation for API Endpoints
 
-All URIs are relative to *https://apis.cma-cgm.net/operation/trackandtrace/v1*
+All URIs are relative to *https://apis.cma-cgm.net*
 
 Class | Method | HTTP request | Description
 ------------ | ------------- | ------------- | -------------
-*EventsApi* | [**GetMoveOnCommercialCycle**](docs/EventsApi.md#getmoveoncommercialcycle) | **Get** /events/{trackingReference} | Find Commercial events from unique tracking reference.
-*EventsApi* | [**SearchMoveOnCommercialCycle**](docs/EventsApi.md#searchmoveoncommercialcycle) | **Get** /events | Find Commercial events.
+*EventsApi* | [**GetMoveOnCommercialCycle**](docs/EventsApi.md#getmoveoncommercialcycle) | **Get** /operation/trackandtrace/v1/events/{trackingReference} | Find Commercial events from unique tracking reference.
+*EventsApi* | [**SearchMoveOnCommercialCycle**](docs/EventsApi.md#searchmoveoncommercialcycle) | **Get** /operation/trackandtrace/v1/events | Find Commercial events.
+*SubscriptionRulesApi* | [**CreateSubscriptionRule**](docs/SubscriptionRulesApi.md#createsubscriptionrule) | **Post** /eventhub/subscription/v1/subscriptionRules | Create an event subscription rule
+*SubscriptionRulesApi* | [**DeleteSubscriptionRule**](docs/SubscriptionRulesApi.md#deletesubscriptionrule) | **Delete** /eventhub/subscription/v1/subscriptionRules | Delete a subscription rule
+*SubscriptionRulesApi* | [**ListSubscriptionRules**](docs/SubscriptionRulesApi.md#listsubscriptionrules) | **Get** /eventhub/subscription/v1/subscriptionRules | List event subscription rules
 
 
 ## Documentation For Models
@@ -134,6 +137,8 @@ Class | Method | HTTP request | Description
  - [BaseTransportEventAllOf5](docs/BaseTransportEventAllOf5.md)
  - [CarrierSpecificData](docs/CarrierSpecificData.md)
  - [CustomsReferences](docs/CustomsReferences.md)
+ - [CvsService](docs/CvsService.md)
+ - [CvsServiceToDelete](docs/CvsServiceToDelete.md)
  - [DocumentReferencesInner](docs/DocumentReferencesInner.md)
  - [DocumentTypeCode](docs/DocumentTypeCode.md)
  - [EmptyIndicatorCode](docs/EmptyIndicatorCode.md)
@@ -141,6 +146,7 @@ Class | Method | HTTP request | Description
  - [EquipmentEventTypeCode](docs/EquipmentEventTypeCode.md)
  - [FacilityCodeListProvider](docs/FacilityCodeListProvider.md)
  - [FacilityTypeCodeTRN](docs/FacilityTypeCodeTRN.md)
+ - [Fault](docs/Fault.md)
  - [InlineResponseDefault](docs/InlineResponseDefault.md)
  - [InlineResponseDefaultAllOf](docs/InlineResponseDefaultAllOf.md)
  - [InlineResponseDefaultAllOf1](docs/InlineResponseDefaultAllOf1.md)
@@ -168,6 +174,8 @@ Class | Method | HTTP request | Description
  - [ShipmentEvent](docs/ShipmentEvent.md)
  - [ShipmentEventTypeCode](docs/ShipmentEventTypeCode.md)
  - [SubErrorsInner](docs/SubErrorsInner.md)
+ - [SubscriptionRule](docs/SubscriptionRule.md)
+ - [SubscriptionRuleToDelete](docs/SubscriptionRuleToDelete.md)
  - [TransportCall](docs/TransportCall.md)
  - [TransportCallAllOf](docs/TransportCallAllOf.md)
  - [TransportCallAllOf1](docs/TransportCallAllOf1.md)
@@ -219,6 +227,8 @@ Note, each API key must be added to a map of `map[string]APIKey` where the key i
 - **Scopes**: 
  - **tandtcommercial:read:be**: read access for private enpoints
  - **tandtpublic:read:be**: read access for public enpoints
+ - **subscriptionrule:read:be**: read access
+ - **subscriptionrule:write:be**: write access
 
 Example
 

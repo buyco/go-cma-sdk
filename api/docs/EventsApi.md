@@ -1,11 +1,11 @@
 # \EventsApi
 
-All URIs are relative to *https://apis.cma-cgm.net/operation/trackandtrace/v1*
+All URIs are relative to *https://apis.cma-cgm.net*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**GetMoveOnCommercialCycle**](EventsApi.md#GetMoveOnCommercialCycle) | **Get** /events/{trackingReference} | Find Commercial events from unique tracking reference.
-[**SearchMoveOnCommercialCycle**](EventsApi.md#SearchMoveOnCommercialCycle) | **Get** /events | Find Commercial events.
+[**GetMoveOnCommercialCycle**](EventsApi.md#GetMoveOnCommercialCycle) | **Get** /operation/trackandtrace/v1/events/{trackingReference} | Find Commercial events from unique tracking reference.
+[**SearchMoveOnCommercialCycle**](EventsApi.md#SearchMoveOnCommercialCycle) | **Get** /operation/trackandtrace/v1/events | Find Commercial events.
 
 
 
