@@ -13,7 +13,6 @@ package api
 import (
 	"encoding/json"
 	"fmt"
-	"time"
 )
 
 // SearchMoveOnCommercialCycle200ResponseInner struct for SearchMoveOnCommercialCycle200ResponseInner
