@@ -20,14 +20,14 @@ type ReferenceType string
 
 // List of referenceType
 const (
-	FF   ReferenceType = "FF"
-	SI   ReferenceType = "SI"
-	PO   ReferenceType = "PO"
-	CR   ReferenceType = "CR"
-	AAO  ReferenceType = "AAO"
-	EQ   ReferenceType = "EQ"
-	LOAD ReferenceType = "LOAD"
-	ERT  ReferenceType = "ERT"
+	REF_FF   ReferenceType = "FF"
+	REF_SI   ReferenceType = "SI"
+	REF_PO   ReferenceType = "PO"
+	REF_CR   ReferenceType = "CR"
+	REF_AAO  ReferenceType = "AAO"
+	REF_EQ   ReferenceType = "EQ"
+	REF_LOAD ReferenceType = "LOAD"
+	REF_ERT  ReferenceType = "ERT"
 )
 
 // All allowed values of ReferenceType enum
