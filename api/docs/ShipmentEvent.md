@@ -8,7 +8,7 @@ Name | Type | Description | Notes
 **EventCreatedDateTime** | **time.Time** | The timestamp of when the event was created. &lt;b&gt;NB&lt;/b&gt;&amp;#58; This field should be considered Metadata | 
 **EventType** | **string** |  | 
 **EventClassifierCode** | **string** | Code for the event classifier can be - ACT (Actual) - PLN (Planned) - EST (Estimated) | 
-**EventDateTime** | **interface{}** | Value for eventDateTime must be the same value as eventCreatedDateTime | 
+**EventDateTime** | Pointer to **interface{}** | Value for eventDateTime must be the same value as eventCreatedDateTime | [optional] 
 **CarrierSpecificData** | Pointer to [**CarrierSpecificData**](CarrierSpecificData.md) |  | [optional] 
 **ShipmentEventTypeCode** | [**ShipmentEventTypeCode**](ShipmentEventTypeCode.md) |  | 
 **DocumentID** | **string** | The id of the object defined by the documentTypeCode. | 
@@ -21,7 +21,7 @@ Name | Type | Description | Notes
 
 ### NewShipmentEvent
 
-`func NewShipmentEvent(eventCreatedDateTime time.Time, eventType string, eventClassifierCode string, eventDateTime interface{}, shipmentEventTypeCode ShipmentEventTypeCode, documentID string, documentTypeCode DocumentTypeCode, ) *ShipmentEvent`
+`func NewShipmentEvent(eventCreatedDateTime time.Time, eventType string, eventClassifierCode string, shipmentEventTypeCode ShipmentEventTypeCode, documentID string, documentTypeCode DocumentTypeCode, ) *ShipmentEvent`
 
 NewShipmentEvent instantiates a new ShipmentEvent object
 This constructor will assign default values to properties that have it defined,
@@ -140,6 +140,11 @@ and a boolean to check if the value has been set.
 
 SetEventDateTime sets EventDateTime field to given value.
 
+### HasEventDateTime
+
+`func (o *ShipmentEvent) HasEventDateTime() bool`
+
+HasEventDateTime returns a boolean if a field has been set.
 
 ### SetEventDateTimeNil
 

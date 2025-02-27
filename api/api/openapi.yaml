@@ -1,12 +1,22 @@
 openapi: 3.0.3
 info:
   contact:
-    email: ho.support-api@cma-cgm.com
     name: CMA CGM API Technical support
     url: https://api-portal.cma-cgm.com/
   description: "Managing and sending Shipment-, Transport- and Equipment-events and\
     \ subscriptions for Track &amp; Trace (T&amp;T). API specification issued by DCSA.org.\n\
-    For explanation to specific values or objects please refer to the <a href='https://dcsa.org/wp-content/uploads/2021/10/202108_DCSA_P1_Information-Model-v3.3_TNT22_Final.pdf'>Information\
+    \n<i>Please note that shipment events and subscription management are not covered\
+    \ yet by CMA CGM API.</i>\n\n<br> This API is accessible through\n<ul> <li> <b>\
+    \ Public </b> connection (authentication with API Key): this allows to retrieve\
+    \ standard equipment moves (e.g. ready to be loaded, discharged), Transhipment\
+    \ moves (e.g. discharged and re-loaded onboard) and planned vessel departure and\
+    \ arrival dates. </li> <li> <b> Private </b> connection (authentication with Oauth2\
+    \ client credentials): this allows to retrieve additional private events such\
+    \ as actual rail and ramp moves, planned departure and arrival dates for inland\
+    \ moves. These private events are available only if you (or your end customer)\
+    \ are identified on the booking as: Booking Party, Deciding Party, Consignee,\
+    \ Notifier or Shipper. </li> </ul> </br>\nFor explanation to specific values or\
+    \ objects please refer to the <a href='https://dcsa.org/wp-content/uploads/2021/10/202108_DCSA_P1_Information-Model-v3.3_TNT22_Final.pdf'>Information\
     \ Model v3.3</a>\nPolling can be done on the <b>GET /events</b> endPoint. DCSA\
     \ version 2.2.0"
   license:
@@ -14,7 +24,14 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   title: Logistic Tracking service API - DCSA OpenAPI specification for Track & Trace
     v2.2.0
-  version: 1.0.3
+  version: 1.2.7
+  x-release-note:
+  - version: 1.2.7
+    date: 2025-02-21
+    changes:
+    - New referenceType ERT (Empty Return Reference)
+    - New referenceType LOAD (LOAD reference)
+  x-dcsaVersion: 2.2.0
 servers:
 - description: CMA CGM Gateway PROD API
   url: https://apis.cma-cgm.net/operation/trackandtrace/v1
@@ -272,6 +289,16 @@ paths:
         schema:
           $ref: '#/components/schemas/eventCreatedDateTime'
         style: form
+      - description: "not DCSA - when search is done by container reference , allow\
+          \ to search the last container cycle happening before the provided date"
+        example: 2021-04-01T14:12:56+01:00
+        explode: true
+        in: query
+        name: eventDateTime
+        required: false
+        schema:
+          $ref: '#/components/schemas/eventCreatedDateTime'
+        style: form
       - description: (Mandatory if you are a Third Party). This field specifies the
           end customer code you request a rate for. Use our referential API Partner
           to check if the end customer exists and to get its Partner ID code -- Not
@@ -339,12 +366,8 @@ paths:
               $ref: '#/components/headers/API-Version'
       security:
       - oAuth2:
-        - tandt:read:be
         - tandtcommercial:read:be
         - tandtpublic:read:be
-        - tandt:read:fe
-        - tandtcommercial:read:fe
-        - tandtpublic:read:fe
       - ApiKeyAuth: []
       summary: Find Commercial events.
       tags:
@@ -430,14 +453,10 @@ paths:
               $ref: '#/components/headers/API-Version'
       security:
       - oAuth2:
-        - tandt:read:be
         - tandtcommercial:read:be
         - tandtpublic:read:be
-        - tandt:read:fe
-        - tandtcommercial:read:fe
-        - tandtpublic:read:fe
       - ApiKeyAuth: []
-      summary: Find Commercial events from unique tracking greference.
+      summary: Find Commercial events from unique tracking reference.
       tags:
       - Events
 components:
@@ -592,7 +611,6 @@ components:
         can additionally be linked to a transport or an equipment
       required:
       - eventClassifierCode
-      - eventDateTime
       - eventType
       type: object
     eventType:
@@ -626,7 +644,7 @@ components:
     transportEventTypeCode:
       description: |-
         Identifier for type of Transport event - ARRI (Arrived) - DEPA (Departed)
-        More details can be found on <a href="https://github.com/dcsaorg/DCSA-Information-Model/blob/master/datamodel/referencedata.d/transporteventtypecodes.csv">GitHub</a>
+        More details can be found on <a href='https://github.com/dcsaorg/DCSA-Information-Model/blob/master/datamodel/referencedata.d/transporteventtypecodes.csv'>GitHub</a>
       enum:
       - ARRI
       - DEPA
@@ -813,7 +831,7 @@ components:
         \ feeder vessels) with either an internal or external mode of propulsion designed\
         \ for the transport of cargo and/or passengers. Ocean vessels are uniquely\
         \ identified by an IMO number consisting of 7 digits, or alternatively by\
-        \ their AIS signal with an MMSI number. "
+        \ their AIS signal with an MMSI number. \n"
       required:
       - vesselIMONumber
       type: object
@@ -893,6 +911,7 @@ components:
       description: The reference type codes defined by DCSA. - FF (Freight Forwarder’s
         Reference) - SI (Shipper’s Reference) - PO (Purchase Order Reference) - CR
         (Customer’s Reference) - AAO (Consignee’s Reference) - EQ (Equipment Reference)
+        - LOAD (Load Reference - CMA) - ERT (Empty Return Reference - CMA)
       enum:
       - FF
       - SI
@@ -900,6 +919,8 @@ components:
       - CR
       - AAO
       - EQ
+      - LOAD
+      - ERT
       example: FF
       type: string
     referenceValue:
@@ -932,7 +953,7 @@ components:
     shipmentEventTypeCode:
       description: |-
         The status of the document in the process. Possible values are - RECE (Received) - DRFT (Drafted) - PENA (Pending Approval) - PENU (Pending Update) - REJE (Rejected) - APPR (Approved) - ISSU (Issued) - SURR (Surrendered) - SUBM (Submitted) - VOID (Void) - CONF (Confirmed) - REQS (Requested) - CMPL (Completed) - HOLD (On Hold) - RELS (Released)
-        More details can be found on <a href="https://github.com/dcsaorg/DCSA-Information-Model/blob/master/datamodel/referencedata.d/shipmenteventtypecodes.csv">GitHub</a>
+        More details can be found on <a href='https://github.com/dcsaorg/DCSA-Information-Model/blob/master/datamodel/referencedata.d/shipmenteventtypecodes.csv'>GitHub</a>
       enum:
       - RECE
       - DRFT
@@ -958,7 +979,7 @@ components:
     documentTypeCode:
       description: |-
         The code to identify the type of information documentID points to. Can be one of the following values - CBR (Carrier Booking Request Reference) - BKG (Booking) - SHI (Shipping Instruction) - SRM (Shipment Release Message) - TRD (Transport Document) - ARN (Arrival Notice) - VGM (Verified Gross Mass) - CAS (Cargo Survey) - CUS (Customs Inspection) - DGD (Dangerous Goods Declaration) - OOG (Out of Gauge)
-        More details can be found on <a href="https://github.com/dcsaorg/DCSA-Information-Model/blob/master/datamodel/referencedata.d/documenttypecodes.csv">GitHub</a>
+        More details can be found on <a href='https://github.com/dcsaorg/DCSA-Information-Model/blob/master/datamodel/referencedata.d/documenttypecodes.csv'>GitHub</a>
       enum:
       - CBR
       - BKG
@@ -1011,7 +1032,7 @@ components:
     equipmentEventTypeCode:
       description: |-
         Unique identifier for equipmentEventTypeCode. - LOAD (Loaded) - DISC (Discharged) - GTIN (Gated in) - GTOT (Gated out) - STUF (Stuffed) - STRP (Stripped) - PICK (Pick-up) - DROP (Drop-off) - INSP (Inspected) - RSEA (Resealed) - RMVD (Removed)
-        More details can be found on <a href="https://github.com/dcsaorg/DCSA-Information-Model/blob/master/datamodel/referencedata.d/equipmenteventtypecodes.csv">GitHub</a>
+        More details can be found on <a href='https://github.com/dcsaorg/DCSA-Information-Model/blob/master/datamodel/referencedata.d/equipmenteventtypecodes.csv'>GitHub</a>
       enum:
       - LOAD
       - DISC
@@ -1170,6 +1191,10 @@ components:
           description: "The Transportation phase, Export, Transshipent or Import"
           example: Export
           type: string
+        shipmentLocationType:
+          description: The location type for the shipment
+          example: POL
+          type: string
         transportCallSequenceTotal:
           description: The total number of sequence provided in transportation plan
           example: 2
@@ -1178,6 +1203,55 @@ components:
           description: The total number equipment units concerned by the message
           example: 1
           type: integer
+        customsReferences:
+          items:
+            $ref: '#/components/schemas/CustomsReferences'
+          type: array
+        originBookingReference:
+          description: The identifier for a shipment
+          example: d9c69bc8-294d-46d1-807c-654598341374
+          format: uuid
+          type: string
+        splitToBookingReferences:
+          items:
+            $ref: '#/components/schemas/shipmentID'
+          type: array
+        mergeToBookingReference:
+          description: The identifier for a shipment
+          example: d9c69bc8-294d-46d1-807c-654598341374
+          format: uuid
+          type: string
+        masterPartLoadBookingReference:
+          description: The identifier for a shipment
+          example: d9c69bc8-294d-46d1-807c-654598341374
+          format: uuid
+          type: string
+        partLoadGroupBookingReferences:
+          items:
+            $ref: '#/components/schemas/shipmentID'
+          type: array
+      type: object
+    CustomsReferences:
+      properties:
+        equipmentReference:
+          description: "The unique identifier for the equipment, which should follow\
+            \ the BIC ISO Container Identification Number where possible. According\
+            \ to ISO 6346, a container identification code consists of a 4-letter\
+            \ prefix and a 7-digit number (composed of a 3-letter owner code, a category\
+            \ identifier, a serial number, and a check-digit). If a container does\
+            \ not comply with ISO 6346, it is suggested to follow Recommendation"
+          example: APZU4812090
+          maxLength: 15
+          type: string
+        customsReference:
+          description: the customs reference for the container
+          example: ATB12345687493994
+          type: string
+        referenceDate:
+          description: the customs reference date
+          example: 2022-05-01
+          format: date
+          type: string
       type: object
     subErrors_inner:
       properties:
@@ -1729,12 +1803,8 @@ components:
       flows:
         clientCredentials:
           scopes:
-            tandtcommercial:read:be: read access for public enpoints
-            tandt:read:be: read access for private enpoints
+            tandtcommercial:read:be: read access for private enpoints
             tandtpublic:read:be: read access for public enpoints
-            tandtcommercial:read:fe: read access for front end public enpoints
-            tandtpublic:read:fe: read access for front end public enpoints
-            tandt:read:fe: read access for front end public enpoints
           tokenUrl: https://auth.cma-cgm.com/as/token.oauth2
       type: oauth2
     ApiKeyAuth:

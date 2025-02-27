@@ -4,7 +4,7 @@ All URIs are relative to *https://apis.cma-cgm.net/operation/trackandtrace/v1*
 
 Method | HTTP request | Description
 ------------- | ------------- | -------------
-[**GetMoveOnCommercialCycle**](EventsApi.md#GetMoveOnCommercialCycle) | **Get** /events/{trackingReference} | Find Commercial events from unique tracking greference.
+[**GetMoveOnCommercialCycle**](EventsApi.md#GetMoveOnCommercialCycle) | **Get** /events/{trackingReference} | Find Commercial events from unique tracking reference.
 [**SearchMoveOnCommercialCycle**](EventsApi.md#SearchMoveOnCommercialCycle) | **Get** /events | Find Commercial events.
 
 
@@ -13,7 +13,7 @@ Method | HTTP request | Description
 
 > []SearchMoveOnCommercialCycle200ResponseInner GetMoveOnCommercialCycle(ctx, trackingReference).BehalfOf(behalfOf).Limit(limit).Cursor(cursor).Execute()
 
-Find Commercial events from unique tracking greference.
+Find Commercial events from unique tracking reference.
 
 
 
@@ -87,7 +87,7 @@ Name | Type | Description  | Notes
 
 ## SearchMoveOnCommercialCycle
 
-> []SearchMoveOnCommercialCycle200ResponseInner SearchMoveOnCommercialCycle(ctx).EventType(eventType).ShipmentEventTypeCode(shipmentEventTypeCode).DocumentTypeCode(documentTypeCode).CarrierBookingReference(carrierBookingReference).TransportDocumentReference(transportDocumentReference).TransportEventTypeCode(transportEventTypeCode).TransportCallID(transportCallID).VesselIMONumber(vesselIMONumber).ExportVoyageNumber(exportVoyageNumber).CarrierServiceCode(carrierServiceCode).UNLocationCode(uNLocationCode).EquipmentEventTypeCode(equipmentEventTypeCode).EquipmentReference(equipmentReference).EventCreatedDateTime(eventCreatedDateTime).BehalfOf(behalfOf).Limit(limit).Cursor(cursor).Execute()
+> []SearchMoveOnCommercialCycle200ResponseInner SearchMoveOnCommercialCycle(ctx).EventType(eventType).ShipmentEventTypeCode(shipmentEventTypeCode).DocumentTypeCode(documentTypeCode).CarrierBookingReference(carrierBookingReference).TransportDocumentReference(transportDocumentReference).TransportEventTypeCode(transportEventTypeCode).TransportCallID(transportCallID).VesselIMONumber(vesselIMONumber).ExportVoyageNumber(exportVoyageNumber).CarrierServiceCode(carrierServiceCode).UNLocationCode(uNLocationCode).EquipmentEventTypeCode(equipmentEventTypeCode).EquipmentReference(equipmentReference).EventCreatedDateTime(eventCreatedDateTime).EventDateTime(eventDateTime).BehalfOf(behalfOf).Limit(limit).Cursor(cursor).Execute()
 
 Find Commercial events.
 
@@ -121,13 +121,14 @@ func main() {
     equipmentEventTypeCode := []openapiclient.EquipmentEventTypeCode{openapiclient.equipmentEventTypeCode("LOAD")} // []EquipmentEventTypeCode | Unique identifier for equipmentEventTypeCode. - LOAD (Loaded) - DISC (Discharged) - GTIN (Gated in) - GTOT (Gated out) - STUF (Stuffed) - STRP (Stripped) - PICK (Pick-up) - DROP (Drop-off) - INSP (Inspected) - RSEA (Resealed) - RMVD (Removed) It is possible to select multiple values by comma (,) separating them. For multiple values the OR-operator is used. For example <i>equipmentEventTypeCode=GTIN,GTOT</i> matches <b>both</b> Gated in (GTIN) and Gated out (GTOT) equipment events. Default is all equipmentEventTypeCodes. This filter is only relevant when filtering on EquipmentEvents (optional) (default to ["LOAD","DISC","GTIN","GTOT","STUF","STRP","PICK","DROP","INSP","RSEA","RMVD"])
     equipmentReference := "equipmentReference_example" // string | Will filter by the unique identifier for the equipment, which should follow the BIC ISO Container Identification Number where possible. Specifying this filter will only return events related to this particular equipmentReference (optional)
     eventCreatedDateTime := time.Now() // time.Time | Limit the result based on the creating date of the event. It is possible to use operators on this query parameter. This is done by adding a colon followed by an operator at the end of the queryParameterName (before the =) <i>eventCreatedDateTime<b>&#58;gte</b>=2021-04-01T14&#58;12&#58;56+01&#58;00</i> would result in all events created &#8805; 2021-04-01T14&#58;12&#58;56+01&#58;00 The following operators are supported - &#58;gte (&#8805; Greater than or equal) - &#58;gt (&#62; Greater than) - &#58;lte (&#8804; Less than or equal) - &#58;lt (&#60; Less than) - &#58;eq (&#61; Equal to) If no operator is provided, a <b>strictly equal</b> is used (this is equivalent to <b>&#58;eq</b> operator). (optional)
+    eventDateTime := time.Now() // time.Time | not DCSA - when search is done by container reference , allow to search the last container cycle happening before the provided date (optional)
     behalfOf := "00002334567" // string | (Mandatory if you are a Third Party). This field specifies the end customer code you request a rate for. Use our referential API Partner to check if the end customer exists and to get its Partner ID code -- Not a standard DCSA attribute (optional)
     limit := int32(100) // int32 | Maximum number of items to return. (optional) (default to 100)
     cursor := "fE9mZnNldHw9MTAmbGltaXQ9MTA=" // string | A server generated value to specify a specific point in a collection result, used for pagination. (optional)
 
     configuration := openapiclient.NewConfiguration()
     apiClient := openapiclient.NewAPIClient(configuration)
-    resp, r, err := apiClient.EventsApi.SearchMoveOnCommercialCycle(context.Background()).EventType(eventType).ShipmentEventTypeCode(shipmentEventTypeCode).DocumentTypeCode(documentTypeCode).CarrierBookingReference(carrierBookingReference).TransportDocumentReference(transportDocumentReference).TransportEventTypeCode(transportEventTypeCode).TransportCallID(transportCallID).VesselIMONumber(vesselIMONumber).ExportVoyageNumber(exportVoyageNumber).CarrierServiceCode(carrierServiceCode).UNLocationCode(uNLocationCode).EquipmentEventTypeCode(equipmentEventTypeCode).EquipmentReference(equipmentReference).EventCreatedDateTime(eventCreatedDateTime).BehalfOf(behalfOf).Limit(limit).Cursor(cursor).Execute()
+    resp, r, err := apiClient.EventsApi.SearchMoveOnCommercialCycle(context.Background()).EventType(eventType).ShipmentEventTypeCode(shipmentEventTypeCode).DocumentTypeCode(documentTypeCode).CarrierBookingReference(carrierBookingReference).TransportDocumentReference(transportDocumentReference).TransportEventTypeCode(transportEventTypeCode).TransportCallID(transportCallID).VesselIMONumber(vesselIMONumber).ExportVoyageNumber(exportVoyageNumber).CarrierServiceCode(carrierServiceCode).UNLocationCode(uNLocationCode).EquipmentEventTypeCode(equipmentEventTypeCode).EquipmentReference(equipmentReference).EventCreatedDateTime(eventCreatedDateTime).EventDateTime(eventDateTime).BehalfOf(behalfOf).Limit(limit).Cursor(cursor).Execute()
     if err != nil {
         fmt.Fprintf(os.Stderr, "Error when calling `EventsApi.SearchMoveOnCommercialCycle``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -162,6 +163,7 @@ Name | Type | Description  | Notes
  **equipmentEventTypeCode** | [**[]EquipmentEventTypeCode**](EquipmentEventTypeCode.md) | Unique identifier for equipmentEventTypeCode. - LOAD (Loaded) - DISC (Discharged) - GTIN (Gated in) - GTOT (Gated out) - STUF (Stuffed) - STRP (Stripped) - PICK (Pick-up) - DROP (Drop-off) - INSP (Inspected) - RSEA (Resealed) - RMVD (Removed) It is possible to select multiple values by comma (,) separating them. For multiple values the OR-operator is used. For example &lt;i&gt;equipmentEventTypeCode&#x3D;GTIN,GTOT&lt;/i&gt; matches &lt;b&gt;both&lt;/b&gt; Gated in (GTIN) and Gated out (GTOT) equipment events. Default is all equipmentEventTypeCodes. This filter is only relevant when filtering on EquipmentEvents | [default to [&quot;LOAD&quot;,&quot;DISC&quot;,&quot;GTIN&quot;,&quot;GTOT&quot;,&quot;STUF&quot;,&quot;STRP&quot;,&quot;PICK&quot;,&quot;DROP&quot;,&quot;INSP&quot;,&quot;RSEA&quot;,&quot;RMVD&quot;]]
  **equipmentReference** | **string** | Will filter by the unique identifier for the equipment, which should follow the BIC ISO Container Identification Number where possible. Specifying this filter will only return events related to this particular equipmentReference | 
  **eventCreatedDateTime** | **time.Time** | Limit the result based on the creating date of the event. It is possible to use operators on this query parameter. This is done by adding a colon followed by an operator at the end of the queryParameterName (before the &#x3D;) &lt;i&gt;eventCreatedDateTime&lt;b&gt;&amp;#58;gte&lt;/b&gt;&#x3D;2021-04-01T14&amp;#58;12&amp;#58;56+01&amp;#58;00&lt;/i&gt; would result in all events created &amp;#8805; 2021-04-01T14&amp;#58;12&amp;#58;56+01&amp;#58;00 The following operators are supported - &amp;#58;gte (&amp;#8805; Greater than or equal) - &amp;#58;gt (&amp;#62; Greater than) - &amp;#58;lte (&amp;#8804; Less than or equal) - &amp;#58;lt (&amp;#60; Less than) - &amp;#58;eq (&amp;#61; Equal to) If no operator is provided, a &lt;b&gt;strictly equal&lt;/b&gt; is used (this is equivalent to &lt;b&gt;&amp;#58;eq&lt;/b&gt; operator). | 
+ **eventDateTime** | **time.Time** | not DCSA - when search is done by container reference , allow to search the last container cycle happening before the provided date | 
  **behalfOf** | **string** | (Mandatory if you are a Third Party). This field specifies the end customer code you request a rate for. Use our referential API Partner to check if the end customer exists and to get its Partner ID code -- Not a standard DCSA attribute | 
  **limit** | **int32** | Maximum number of items to return. | [default to 100]
  **cursor** | **string** | A server generated value to specify a specific point in a collection result, used for pagination. | 

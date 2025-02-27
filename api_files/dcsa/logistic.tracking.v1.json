@@ -2,17 +2,27 @@
   "openapi": "3.0.3",
   "info": {
     "title": "Logistic Tracking service API - DCSA OpenAPI specification for Track & Trace v2.2.0",
-    "description": "Managing and sending Shipment-, Transport- and Equipment-events and subscriptions for Track &amp; Trace (T&amp;T). API specification issued by DCSA.org.\nFor explanation to specific values or objects please refer to the <a href='https://dcsa.org/wp-content/uploads/2021/10/202108_DCSA_P1_Information-Model-v3.3_TNT22_Final.pdf'>Information Model v3.3</a>\nPolling can be done on the <b>GET /events</b> endPoint. DCSA version 2.2.0",
+    "x-release-note": [
+      {
+        "version": "1.2.7",
+        "date": "2025-02-21",
+        "changes": [
+          "New referenceType ERT (Empty Return Reference)",
+          "New referenceType LOAD (LOAD reference)"
+        ]
+      }
+    ],
+    "description": "Managing and sending Shipment-, Transport- and Equipment-events and subscriptions for Track &amp; Trace (T&amp;T). API specification issued by DCSA.org.\n\n<i>Please note that shipment events and subscription management are not covered yet by CMA CGM API.</i>\n\n<br> This API is accessible through\n<ul> <li> <b> Public </b> connection (authentication with API Key): this allows to retrieve standard equipment moves (e.g. ready to be loaded, discharged), Transhipment moves (e.g. discharged and re-loaded onboard) and planned vessel departure and arrival dates. </li> <li> <b> Private </b> connection (authentication with Oauth2 client credentials): this allows to retrieve additional private events such as actual rail and ramp moves, planned departure and arrival dates for inland moves. These private events are available only if you (or your end customer) are identified on the booking as: Booking Party, Deciding Party, Consignee, Notifier or Shipper. </li> </ul> </br>\nFor explanation to specific values or objects please refer to the <a href='https://dcsa.org/wp-content/uploads/2021/10/202108_DCSA_P1_Information-Model-v3.3_TNT22_Final.pdf'>Information Model v3.3</a>\nPolling can be done on the <b>GET /events</b> endPoint. DCSA version 2.2.0",
     "contact": {
       "name": "CMA CGM API Technical support",
-      "url": "https://api-portal.cma-cgm.com/",
-      "email": "ho.support-api@cma-cgm.com"
+      "url": "https://api-portal.cma-cgm.com/"
     },
     "license": {
       "name": "Apache 2.0",
       "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
     },
-    "version": "1.0.3"
+    "version": "1.2.7",
+    "x-dcsaVersion": "2.2.0"
   },
   "servers": [
     {
@@ -248,6 +258,16 @@
             "example": "2021-04-01T14:12:56+01:00"
           },
           {
+            "name": "eventDateTime",
+            "in": "query",
+            "description": "not DCSA - when search is done by container reference , allow to search the last container cycle happening before the provided date",
+            "required": false,
+            "schema": {
+              "$ref": "#/components/schemas/eventCreatedDateTime"
+            },
+            "example": "2021-04-01T14:12:56+01:00"
+          },
+          {
             "name": "behalfOf",
             "in": "query",
             "description": "(Mandatory if you are a Third Party). This field specifies the end customer code you request a rate for. Use our referential API Partner to check if the end customer exists and to get its Partner ID code -- Not a standard DCSA attribute",
@@ -344,12 +364,8 @@
         "security": [
           {
             "oAuth2": [
-              "tandt:read:be",
               "tandtcommercial:read:be",
-              "tandtpublic:read:be",
-              "tandt:read:fe",
-              "tandtcommercial:read:fe",
-              "tandtpublic:read:fe"
+              "tandtpublic:read:be"
             ]
           },
           {
@@ -364,7 +380,7 @@
           "Events"
         ],
         "operationId": "getMoveOnCommercialCycle",
-        "summary": "Find Commercial events from unique tracking greference.",
+        "summary": "Find Commercial events from unique tracking reference.",
         "description": "Return commercial cycle belonging to provided tracking reference\n<b>Query is not DCSA compliant but Return data follow DCSA TNT 2.2.0 specifications</b>",
         "parameters": [
           {
@@ -473,12 +489,8 @@
         "security": [
           {
             "oAuth2": [
-              "tandt:read:be",
               "tandtcommercial:read:be",
-              "tandtpublic:read:be",
-              "tandt:read:fe",
-              "tandtcommercial:read:fe",
-              "tandtpublic:read:fe"
+              "tandtpublic:read:be"
             ]
           },
           {
@@ -496,12 +508,8 @@
           "clientCredentials": {
             "tokenUrl": "https://auth.cma-cgm.com/as/token.oauth2",
             "scopes": {
-              "tandtcommercial:read:be": "read access for public enpoints",
-              "tandt:read:be": "read access for private enpoints",
-              "tandtpublic:read:be": "read access for public enpoints",
-              "tandtcommercial:read:fe": "read access for front end public enpoints",
-              "tandtpublic:read:fe": "read access for front end public enpoints",
-              "tandt:read:fe": "read access for front end public enpoints"
+              "tandtcommercial:read:be": "read access for private enpoints",
+              "tandtpublic:read:be": "read access for public enpoints"
             }
           }
         }
@@ -638,7 +646,6 @@
       "baseEventBody": {
         "required": [
           "eventClassifierCode",
-          "eventDateTime",
           "eventType"
         ],
         "type": "object",
@@ -763,7 +770,7 @@
       },
       "transportEventTypeCode": {
         "type": "string",
-        "description": "Identifier for type of Transport event - ARRI (Arrived) - DEPA (Departed)\nMore details can be found on <a href=\"https://github.com/dcsaorg/DCSA-Information-Model/blob/master/datamodel/referencedata.d/transporteventtypecodes.csv\">GitHub</a>",
+        "description": "Identifier for type of Transport event - ARRI (Arrived) - DEPA (Departed)\nMore details can be found on <a href='https://github.com/dcsaorg/DCSA-Information-Model/blob/master/datamodel/referencedata.d/transporteventtypecodes.csv'>GitHub</a>",
         "example": "ARRI",
         "enum": [
           "ARRI",
@@ -1171,7 +1178,7 @@
           "vesselIMONumber"
         ],
         "type": "object",
-        "description": "describes a floating, sea going structure (mother vessels and feeder vessels) with either an internal or external mode of propulsion designed for the transport of cargo and/or passengers. Ocean vessels are uniquely identified by an IMO number consisting of 7 digits, or alternatively by their AIS signal with an MMSI number. ",
+        "description": "describes a floating, sea going structure (mother vessels and feeder vessels) with either an internal or external mode of propulsion designed for the transport of cargo and/or passengers. Ocean vessels are uniquely identified by an IMO number consisting of 7 digits, or alternatively by their AIS signal with an MMSI number. \n",
         "allOf": [
           {
             "type": "object",
@@ -1314,7 +1321,7 @@
       },
       "referenceType": {
         "type": "string",
-        "description": "The reference type codes defined by DCSA. - FF (Freight Forwarder’s Reference) - SI (Shipper’s Reference) - PO (Purchase Order Reference) - CR (Customer’s Reference) - AAO (Consignee’s Reference) - EQ (Equipment Reference)",
+        "description": "The reference type codes defined by DCSA. - FF (Freight Forwarder’s Reference) - SI (Shipper’s Reference) - PO (Purchase Order Reference) - CR (Customer’s Reference) - AAO (Consignee’s Reference) - EQ (Equipment Reference) - LOAD (Load Reference - CMA) - ERT (Empty Return Reference - CMA)",
         "example": "FF",
         "enum": [
           "FF",
@@ -1322,7 +1329,9 @@
           "PO",
           "CR",
           "AAO",
-          "EQ"
+          "EQ",
+          "LOAD",
+          "ERT"
         ]
       },
       "referenceValue": {
@@ -1432,7 +1441,7 @@
       },
       "shipmentEventTypeCode": {
         "type": "string",
-        "description": "The status of the document in the process. Possible values are - RECE (Received) - DRFT (Drafted) - PENA (Pending Approval) - PENU (Pending Update) - REJE (Rejected) - APPR (Approved) - ISSU (Issued) - SURR (Surrendered) - SUBM (Submitted) - VOID (Void) - CONF (Confirmed) - REQS (Requested) - CMPL (Completed) - HOLD (On Hold) - RELS (Released)\nMore details can be found on <a href=\"https://github.com/dcsaorg/DCSA-Information-Model/blob/master/datamodel/referencedata.d/shipmenteventtypecodes.csv\">GitHub</a>",
+        "description": "The status of the document in the process. Possible values are - RECE (Received) - DRFT (Drafted) - PENA (Pending Approval) - PENU (Pending Update) - REJE (Rejected) - APPR (Approved) - ISSU (Issued) - SURR (Surrendered) - SUBM (Submitted) - VOID (Void) - CONF (Confirmed) - REQS (Requested) - CMPL (Completed) - HOLD (On Hold) - RELS (Released)\nMore details can be found on <a href='https://github.com/dcsaorg/DCSA-Information-Model/blob/master/datamodel/referencedata.d/shipmenteventtypecodes.csv'>GitHub</a>",
         "example": "DRFT",
         "enum": [
           "RECE",
@@ -1460,7 +1469,7 @@
       "documentTypeCode": {
         "maxLength": 3,
         "type": "string",
-        "description": "The code to identify the type of information documentID points to. Can be one of the following values - CBR (Carrier Booking Request Reference) - BKG (Booking) - SHI (Shipping Instruction) - SRM (Shipment Release Message) - TRD (Transport Document) - ARN (Arrival Notice) - VGM (Verified Gross Mass) - CAS (Cargo Survey) - CUS (Customs Inspection) - DGD (Dangerous Goods Declaration) - OOG (Out of Gauge)\nMore details can be found on <a href=\"https://github.com/dcsaorg/DCSA-Information-Model/blob/master/datamodel/referencedata.d/documenttypecodes.csv\">GitHub</a>",
+        "description": "The code to identify the type of information documentID points to. Can be one of the following values - CBR (Carrier Booking Request Reference) - BKG (Booking) - SHI (Shipping Instruction) - SRM (Shipment Release Message) - TRD (Transport Document) - ARN (Arrival Notice) - VGM (Verified Gross Mass) - CAS (Cargo Survey) - CUS (Customs Inspection) - DGD (Dangerous Goods Declaration) - OOG (Out of Gauge)\nMore details can be found on <a href='https://github.com/dcsaorg/DCSA-Information-Model/blob/master/datamodel/referencedata.d/documenttypecodes.csv'>GitHub</a>",
         "example": "SHI",
         "enum": [
           "CBR",
@@ -1599,7 +1608,7 @@
       },
       "equipmentEventTypeCode": {
         "type": "string",
-        "description": "Unique identifier for equipmentEventTypeCode. - LOAD (Loaded) - DISC (Discharged) - GTIN (Gated in) - GTOT (Gated out) - STUF (Stuffed) - STRP (Stripped) - PICK (Pick-up) - DROP (Drop-off) - INSP (Inspected) - RSEA (Resealed) - RMVD (Removed)\nMore details can be found on <a href=\"https://github.com/dcsaorg/DCSA-Information-Model/blob/master/datamodel/referencedata.d/equipmenteventtypecodes.csv\">GitHub</a>",
+        "description": "Unique identifier for equipmentEventTypeCode. - LOAD (Loaded) - DISC (Discharged) - GTIN (Gated in) - GTOT (Gated out) - STUF (Stuffed) - STRP (Stripped) - PICK (Pick-up) - DROP (Drop-off) - INSP (Inspected) - RSEA (Resealed) - RMVD (Removed)\nMore details can be found on <a href='https://github.com/dcsaorg/DCSA-Information-Model/blob/master/datamodel/referencedata.d/equipmenteventtypecodes.csv'>GitHub</a>",
         "example": "LOAD",
         "enum": [
           "LOAD",
@@ -1825,6 +1834,11 @@
             "description": "The Transportation phase, Export, Transshipent or Import",
             "example": "Export"
           },
+          "shipmentLocationType": {
+            "type": "string",
+            "description": "The location type for the shipment",
+            "example": "POL"
+          },
           "transportCallSequenceTotal": {
             "type": "integer",
             "description": "The total number of sequence provided in transportation plan",
@@ -1834,6 +1848,52 @@
             "type": "integer",
             "description": "The total number equipment units concerned by the message",
             "example": 1
+          },
+          "customsReferences": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomsReferences"
+            }
+          },
+          "originBookingReference": {
+            "$ref": "#/components/schemas/shipmentID"
+          },
+          "splitToBookingReferences": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/shipmentID"
+            }
+          },
+          "mergeToBookingReference": {
+            "$ref": "#/components/schemas/shipmentID"
+          },
+          "masterPartLoadBookingReference": {
+            "$ref": "#/components/schemas/shipmentID"
+          },
+          "partLoadGroupBookingReferences": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/shipmentID"
+            }
+          }
+        }
+      },
+      "CustomsReferences": {
+        "type": "object",
+        "properties": {
+          "equipmentReference": {
+            "$ref": "#/components/schemas/equipmentReference"
+          },
+          "customsReference": {
+            "type": "string",
+            "description": "the customs reference for the container",
+            "example": "ATB12345687493994"
+          },
+          "referenceDate": {
+            "type": "string",
+            "format": "date",
+            "description": "the customs reference date",
+            "example": "2022-05-01"
           }
         }
       },
