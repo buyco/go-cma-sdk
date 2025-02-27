@@ -47,6 +47,7 @@ docs/BaseTransportEventAllOf3.md
 docs/BaseTransportEventAllOf4.md
 docs/BaseTransportEventAllOf5.md
 docs/CarrierSpecificData.md
+docs/CustomsReferences.md
 docs/DocumentReferencesInner.md
 docs/DocumentTypeCode.md
 docs/EmptyIndicatorCode.md
@@ -153,6 +154,7 @@ model_base_transport_event_all_of_3.go
 model_base_transport_event_all_of_4.go
 model_base_transport_event_all_of_5.go
 model_carrier_specific_data.go
+model_customs_references.go
 model_document_references_inner.go
 model_document_type_code.go
 model_empty_indicator_code.go

@@ -10,8 +10,15 @@ Name | Type | Description | Notes
 **InternalFacilityCode** | Pointer to **string** | CMA internal facility Code | [optional] 
 **BookingExportVoyageReference** | Pointer to **string** | Carrier export voyage reference defined on Booking | [optional] 
 **TransportationPhase** | Pointer to **string** | The Transportation phase, Export, Transshipent or Import | [optional] 
+**ShipmentLocationType** | Pointer to **string** | The location type for the shipment | [optional] 
 **TransportCallSequenceTotal** | Pointer to **int32** | The total number of sequence provided in transportation plan | [optional] 
 **NumberOfUnits** | Pointer to **int32** | The total number equipment units concerned by the message | [optional] 
+**CustomsReferences** | Pointer to [**[]CustomsReferences**](CustomsReferences.md) |  | [optional] 
+**OriginBookingReference** | Pointer to **string** | The identifier for a shipment | [optional] 
+**SplitToBookingReferences** | Pointer to **[]string** |  | [optional] 
+**MergeToBookingReference** | Pointer to **string** | The identifier for a shipment | [optional] 
+**MasterPartLoadBookingReference** | Pointer to **string** | The identifier for a shipment | [optional] 
+**PartLoadGroupBookingReferences** | Pointer to **[]string** |  | [optional] 
 
 ## Methods
 
@@ -182,6 +189,31 @@ SetTransportationPhase sets TransportationPhase field to given value.
 
 HasTransportationPhase returns a boolean if a field has been set.
 
+### GetShipmentLocationType
+
+`func (o *CarrierSpecificData) GetShipmentLocationType() string`
+
+GetShipmentLocationType returns the ShipmentLocationType field if non-nil, zero value otherwise.
+
+### GetShipmentLocationTypeOk
+
+`func (o *CarrierSpecificData) GetShipmentLocationTypeOk() (*string, bool)`
+
+GetShipmentLocationTypeOk returns a tuple with the ShipmentLocationType field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetShipmentLocationType
+
+`func (o *CarrierSpecificData) SetShipmentLocationType(v string)`
+
+SetShipmentLocationType sets ShipmentLocationType field to given value.
+
+### HasShipmentLocationType
+
+`func (o *CarrierSpecificData) HasShipmentLocationType() bool`
+
+HasShipmentLocationType returns a boolean if a field has been set.
+
 ### GetTransportCallSequenceTotal
 
 `func (o *CarrierSpecificData) GetTransportCallSequenceTotal() int32`
@@ -231,6 +263,156 @@ SetNumberOfUnits sets NumberOfUnits field to given value.
 `func (o *CarrierSpecificData) HasNumberOfUnits() bool`
 
 HasNumberOfUnits returns a boolean if a field has been set.
+
+### GetCustomsReferences
+
+`func (o *CarrierSpecificData) GetCustomsReferences() []CustomsReferences`
+
+GetCustomsReferences returns the CustomsReferences field if non-nil, zero value otherwise.
+
+### GetCustomsReferencesOk
+
+`func (o *CarrierSpecificData) GetCustomsReferencesOk() (*[]CustomsReferences, bool)`
+
+GetCustomsReferencesOk returns a tuple with the CustomsReferences field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetCustomsReferences
+
+`func (o *CarrierSpecificData) SetCustomsReferences(v []CustomsReferences)`
+
+SetCustomsReferences sets CustomsReferences field to given value.
+
+### HasCustomsReferences
+
+`func (o *CarrierSpecificData) HasCustomsReferences() bool`
+
+HasCustomsReferences returns a boolean if a field has been set.
+
+### GetOriginBookingReference
+
+`func (o *CarrierSpecificData) GetOriginBookingReference() string`
+
+GetOriginBookingReference returns the OriginBookingReference field if non-nil, zero value otherwise.
+
+### GetOriginBookingReferenceOk
+
+`func (o *CarrierSpecificData) GetOriginBookingReferenceOk() (*string, bool)`
+
+GetOriginBookingReferenceOk returns a tuple with the OriginBookingReference field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetOriginBookingReference
+
+`func (o *CarrierSpecificData) SetOriginBookingReference(v string)`
+
+SetOriginBookingReference sets OriginBookingReference field to given value.
+
+### HasOriginBookingReference
+
+`func (o *CarrierSpecificData) HasOriginBookingReference() bool`
+
+HasOriginBookingReference returns a boolean if a field has been set.
+
+### GetSplitToBookingReferences
+
+`func (o *CarrierSpecificData) GetSplitToBookingReferences() []string`
+
+GetSplitToBookingReferences returns the SplitToBookingReferences field if non-nil, zero value otherwise.
+
+### GetSplitToBookingReferencesOk
+
+`func (o *CarrierSpecificData) GetSplitToBookingReferencesOk() (*[]string, bool)`
+
+GetSplitToBookingReferencesOk returns a tuple with the SplitToBookingReferences field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSplitToBookingReferences
+
+`func (o *CarrierSpecificData) SetSplitToBookingReferences(v []string)`
+
+SetSplitToBookingReferences sets SplitToBookingReferences field to given value.
+
+### HasSplitToBookingReferences
+
+`func (o *CarrierSpecificData) HasSplitToBookingReferences() bool`
+
+HasSplitToBookingReferences returns a boolean if a field has been set.
+
+### GetMergeToBookingReference
+
+`func (o *CarrierSpecificData) GetMergeToBookingReference() string`
+
+GetMergeToBookingReference returns the MergeToBookingReference field if non-nil, zero value otherwise.
+
+### GetMergeToBookingReferenceOk
+
+`func (o *CarrierSpecificData) GetMergeToBookingReferenceOk() (*string, bool)`
+
+GetMergeToBookingReferenceOk returns a tuple with the MergeToBookingReference field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetMergeToBookingReference
+
+`func (o *CarrierSpecificData) SetMergeToBookingReference(v string)`
+
+SetMergeToBookingReference sets MergeToBookingReference field to given value.
+
+### HasMergeToBookingReference
+
+`func (o *CarrierSpecificData) HasMergeToBookingReference() bool`
+
+HasMergeToBookingReference returns a boolean if a field has been set.
+
+### GetMasterPartLoadBookingReference
+
+`func (o *CarrierSpecificData) GetMasterPartLoadBookingReference() string`
+
+GetMasterPartLoadBookingReference returns the MasterPartLoadBookingReference field if non-nil, zero value otherwise.
+
+### GetMasterPartLoadBookingReferenceOk
+
+`func (o *CarrierSpecificData) GetMasterPartLoadBookingReferenceOk() (*string, bool)`
+
+GetMasterPartLoadBookingReferenceOk returns a tuple with the MasterPartLoadBookingReference field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetMasterPartLoadBookingReference
+
+`func (o *CarrierSpecificData) SetMasterPartLoadBookingReference(v string)`
+
+SetMasterPartLoadBookingReference sets MasterPartLoadBookingReference field to given value.
+
+### HasMasterPartLoadBookingReference
+
+`func (o *CarrierSpecificData) HasMasterPartLoadBookingReference() bool`
+
+HasMasterPartLoadBookingReference returns a boolean if a field has been set.
+
+### GetPartLoadGroupBookingReferences
+
+`func (o *CarrierSpecificData) GetPartLoadGroupBookingReferences() []string`
+
+GetPartLoadGroupBookingReferences returns the PartLoadGroupBookingReferences field if non-nil, zero value otherwise.
+
+### GetPartLoadGroupBookingReferencesOk
+
+`func (o *CarrierSpecificData) GetPartLoadGroupBookingReferencesOk() (*[]string, bool)`
+
+GetPartLoadGroupBookingReferencesOk returns a tuple with the PartLoadGroupBookingReferences field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetPartLoadGroupBookingReferences
+
+`func (o *CarrierSpecificData) SetPartLoadGroupBookingReferences(v []string)`
+
+SetPartLoadGroupBookingReferences sets PartLoadGroupBookingReferences field to given value.
+
+### HasPartLoadGroupBookingReferences
+
+`func (o *CarrierSpecificData) HasPartLoadGroupBookingReferences() bool`
+
+HasPartLoadGroupBookingReferences returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

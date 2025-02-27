@@ -8,7 +8,7 @@ Name | Type | Description | Notes
 **EventCreatedDateTime** | **time.Time** | The timestamp of when the event was created. &lt;b&gt;NB&lt;/b&gt;&amp;#58; This field should be considered Metadata | 
 **EventType** | **string** |  | 
 **EventClassifierCode** | **string** | Code for the event classifier can be - ACT (Actual) - PLN (Planned) - EST (Estimated) | 
-**EventDateTime** | **time.Time** | The local date and time, where the event took place or when the event will take place, in ISO 8601 format. | 
+**EventDateTime** | Pointer to **time.Time** | The local date and time, where the event took place or when the event will take place, in ISO 8601 format. | [optional] 
 **CarrierSpecificData** | Pointer to [**CarrierSpecificData**](CarrierSpecificData.md) |  | [optional] 
 **TransportEventTypeCode** | [**TransportEventTypeCode**](TransportEventTypeCode.md) |  | 
 **DelayReasonCode** | Pointer to **string** | Reason code for the delay. The SMDG-Delay-Reason-Codes are used for this attribute. The code list can be found at http://www.smdg.org/smdg-code-lists/ | [optional] 
@@ -21,7 +21,7 @@ Name | Type | Description | Notes
 
 ### NewTransportEvent
 
-`func NewTransportEvent(eventCreatedDateTime time.Time, eventType string, eventClassifierCode string, eventDateTime time.Time, transportEventTypeCode TransportEventTypeCode, transportCall TransportCall, ) *TransportEvent`
+`func NewTransportEvent(eventCreatedDateTime time.Time, eventType string, eventClassifierCode string, transportEventTypeCode TransportEventTypeCode, transportCall TransportCall, ) *TransportEvent`
 
 NewTransportEvent instantiates a new TransportEvent object
 This constructor will assign default values to properties that have it defined,
@@ -140,6 +140,11 @@ and a boolean to check if the value has been set.
 
 SetEventDateTime sets EventDateTime field to given value.
 
+### HasEventDateTime
+
+`func (o *TransportEvent) HasEventDateTime() bool`
+
+HasEventDateTime returns a boolean if a field has been set.
 
 ### GetCarrierSpecificData
 

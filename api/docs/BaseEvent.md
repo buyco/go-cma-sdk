@@ -8,14 +8,14 @@ Name | Type | Description | Notes
 **EventCreatedDateTime** | **time.Time** | The timestamp of when the event was created. &lt;b&gt;NB&lt;/b&gt;&amp;#58; This field should be considered Metadata | 
 **EventType** | **string** | The Event Type of the object - to be used as a discriminator. &lt;b&gt;NB&lt;/b&gt;&amp;#58; This field should be considered Metadata | 
 **EventClassifierCode** | **string** | Code for the event classifier. Values can vary depending on eventType | 
-**EventDateTime** | **time.Time** | The local date and time, where the event took place or when the event will take place, in ISO 8601 format. | 
+**EventDateTime** | Pointer to **time.Time** | The local date and time, where the event took place or when the event will take place, in ISO 8601 format. | [optional] 
 **CarrierSpecificData** | Pointer to [**CarrierSpecificData**](CarrierSpecificData.md) |  | [optional] 
 
 ## Methods
 
 ### NewBaseEvent
 
-`func NewBaseEvent(eventCreatedDateTime time.Time, eventType string, eventClassifierCode string, eventDateTime time.Time, ) *BaseEvent`
+`func NewBaseEvent(eventCreatedDateTime time.Time, eventType string, eventClassifierCode string, ) *BaseEvent`
 
 NewBaseEvent instantiates a new BaseEvent object
 This constructor will assign default values to properties that have it defined,
@@ -134,6 +134,11 @@ and a boolean to check if the value has been set.
 
 SetEventDateTime sets EventDateTime field to given value.
 
+### HasEventDateTime
+
+`func (o *BaseEvent) HasEventDateTime() bool`
+
+HasEventDateTime returns a boolean if a field has been set.
 
 ### GetCarrierSpecificData
 

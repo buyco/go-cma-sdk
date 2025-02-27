@@ -8,7 +8,7 @@ Name | Type | Description | Notes
 **EventCreatedDateTime** | **time.Time** | The timestamp of when the event was created. &lt;b&gt;NB&lt;/b&gt;&amp;#58; This field should be considered Metadata | 
 **EventType** | **string** |  | 
 **EventClassifierCode** | **string** | Code for the event classifier can be - PLN (Planned) - ACT (Actual) - EST (Estimated) | 
-**EventDateTime** | **time.Time** | The local date and time, where the event took place or when the event will take place, in ISO 8601 format. | 
+**EventDateTime** | Pointer to **time.Time** | The local date and time, where the event took place or when the event will take place, in ISO 8601 format. | [optional] 
 **CarrierSpecificData** | Pointer to [**CarrierSpecificData**](CarrierSpecificData.md) |  | [optional] 
 **EquipmentEventTypeCode** | [**EquipmentEventTypeCode**](EquipmentEventTypeCode.md) |  | 
 **EquipmentReference** | Pointer to **string** | The unique identifier for the equipment, which should follow the BIC ISO Container Identification Number where possible. According to ISO 6346, a container identification code consists of a 4-letter prefix and a 7-digit number (composed of a 3-letter owner code, a category identifier, a serial number, and a check-digit). If a container does not comply with ISO 6346, it is suggested to follow Recommendation | [optional] 
@@ -24,7 +24,7 @@ Name | Type | Description | Notes
 
 ### NewEquipmentEvent
 
-`func NewEquipmentEvent(eventCreatedDateTime time.Time, eventType string, eventClassifierCode string, eventDateTime time.Time, equipmentEventTypeCode EquipmentEventTypeCode, emptyIndicatorCode EmptyIndicatorCode, ) *EquipmentEvent`
+`func NewEquipmentEvent(eventCreatedDateTime time.Time, eventType string, eventClassifierCode string, equipmentEventTypeCode EquipmentEventTypeCode, emptyIndicatorCode EmptyIndicatorCode, ) *EquipmentEvent`
 
 NewEquipmentEvent instantiates a new EquipmentEvent object
 This constructor will assign default values to properties that have it defined,
@@ -143,6 +143,11 @@ and a boolean to check if the value has been set.
 
 SetEventDateTime sets EventDateTime field to given value.
 
+### HasEventDateTime
+
+`func (o *EquipmentEvent) HasEventDateTime() bool`
+
+HasEventDateTime returns a boolean if a field has been set.
 
 ### GetCarrierSpecificData
 

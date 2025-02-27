@@ -6,14 +6,14 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **EventType** | **string** | The Event Type of the object - to be used as a discriminator. &lt;b&gt;NB&lt;/b&gt;&amp;#58; This field should be considered Metadata | 
 **EventClassifierCode** | **string** | Code for the event classifier. Values can vary depending on eventType | 
-**EventDateTime** | **time.Time** | The local date and time, where the event took place or when the event will take place, in ISO 8601 format. | 
+**EventDateTime** | Pointer to **time.Time** | The local date and time, where the event took place or when the event will take place, in ISO 8601 format. | [optional] 
 **CarrierSpecificData** | Pointer to [**CarrierSpecificData**](CarrierSpecificData.md) |  | [optional] 
 
 ## Methods
 
 ### NewBaseEventBody
 
-`func NewBaseEventBody(eventType string, eventClassifierCode string, eventDateTime time.Time, ) *BaseEventBody`
+`func NewBaseEventBody(eventType string, eventClassifierCode string, ) *BaseEventBody`
 
 NewBaseEventBody instantiates a new BaseEventBody object
 This constructor will assign default values to properties that have it defined,
@@ -87,6 +87,11 @@ and a boolean to check if the value has been set.
 
 SetEventDateTime sets EventDateTime field to given value.
 
+### HasEventDateTime
+
+`func (o *BaseEventBody) HasEventDateTime() bool`
+
+HasEventDateTime returns a boolean if a field has been set.
 
 ### GetCarrierSpecificData
 
