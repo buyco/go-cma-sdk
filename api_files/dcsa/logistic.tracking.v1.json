@@ -26,15 +26,15 @@
   },
   "servers": [
     {
-      "url": "https://apis.cma-cgm.net/operation/trackandtrace/v1",
+      "url": "https://apis.cma-cgm.net",
       "description": "CMA CGM Gateway PROD API"
     },
     {
-      "url": "https://apis-pre.cma-cgm.net/operation/trackandtrace/v1",
+      "url": "https://apis-pre.cma-cgm.net",
       "description": "CMA CGM Gateway PreProd API"
     },
     {
-      "url": "https://apis-uat.cma-cgm.net/operation/trackandtrace/v1",
+      "url": "https://apis-uat.cma-cgm.net",
       "description": "CMA CGM Gateway UAT"
     }
   ],
@@ -42,10 +42,14 @@
     {
       "name": "Events",
       "description": "Event operations - Public track and trace methods of a commercial cycle"
+    },
+    {
+      "name": "Subscription Rules",
+      "description": "Methods related to subscription rules"
     }
   ],
   "paths": {
-    "/events": {
+    "/operation/trackandtrace/v1/events": {
       "get": {
         "tags": [
           "Events"
@@ -374,7 +378,7 @@
         ]
       }
     },
-    "/events/{trackingReference}": {
+    "/operation/trackandtrace/v1/events/{trackingReference}": {
       "get": {
         "tags": [
           "Events"
@@ -498,6 +502,256 @@
           }
         ]
       }
+    },
+    "/eventhub/subscription/v1/subscriptionRules": {
+      "post": {
+        "tags": [
+          "Subscription Rules"
+        ],
+        "summary": "Create an event subscription rule",
+        "description": "Create an event subscription rule which is composed as follow <ui> <li>List of equipments to be tracked</li> <li>List of shipments to be tracked</li> <li>List of contracts to be tracked</li> <li>List of CVS services to be tracked (by default 365 days) </li> <li>Electronic channel where the booking request is submitted</li> <li>Start date and end date to define rule validity period (by default 120 days).</li> </ui>",
+        "operationId": "createSubscriptionRule",
+        "requestBody": {
+          "description": "The subscription rule object",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubscriptionRule"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "hereunder fault datatype description<br> Reason - 400 Bad request<br> Code - SUB_ERR Description - bad request parameter unknown",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Fault"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "hereunder fault datatype description<br> Reason - 403 Missing rights<br> Code - SUB_ERR Description - Missing rights for subscription rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Fault"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "hereunder fault datatype description <br>  Reason -  500 Internal error <br>  Code - SUB_ERR Description - Subscription service unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Fault"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "oAuth2": [
+              "subscriptionrule:write:be"
+            ]
+          }
+        ]
+      },
+      "get": {
+        "tags": [
+          "Subscription Rules"
+        ],
+        "summary": "List event subscription rules",
+        "description": "List event subscription rules.",
+        "operationId": "listSubscriptionRules",
+        "parameters": [
+          {
+            "name": "range",
+            "in": "header",
+            "description": "Pagination parameter. default 0-49. Maximum rows to return 50",
+            "schema": {
+              "type": "string",
+              "default": "0-49"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "headers": {
+              "Content-Range": {
+                "description": "Returned range.",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Accept-Range": {
+                "description": "Max accepted range.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SubscriptionRule"
+                  }
+                }
+              }
+            }
+          },
+          "206": {
+            "description": "Successful Operation but partial content",
+            "headers": {
+              "Content-Range": {
+                "description": "Returned range.",
+                "schema": {
+                  "type": "string"
+                }
+              },
+              "Accept-Range": {
+                "description": "Max accepted range.",
+                "schema": {
+                  "type": "string"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/SubscriptionRule"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "hereunder fault datatype description<br> Reason - 400 Bad request<br> Code - SUB_ERR Description - bad request parameter unknown",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Fault"
+                }
+              }
+            }
+          },
+          "416": {
+            "description": "hereunder fault datatype description<br> Reason - 416 Range Not Satisfiable<br> Code - SUB_ERR Description -  No rules for range",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Fault"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "hereunder fault datatype description <br>  Reason -  500 Internal error <br>  Code - SUB_ERR Description - Subscription service unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Fault"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "oAuth2": [
+              "subscriptionrule:read:be"
+            ]
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "Subscription Rules"
+        ],
+        "summary": "Delete a subscription rule",
+        "description": "delete a subscription rule",
+        "operationId": "deleteSubscriptionRule",
+        "requestBody": {
+          "description": "the subscription rule to delete for a subscriber",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SubscriptionRuleToDelete"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "hereunder fault datatype description<br> Reason - 400 Bad request<br> Code - SUB_ERR Description - bad request parameter unknown",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Fault"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "hereunder fault datatype description<br> Reason - 403 Missing rights<br> Code - SUB_ERR Description - Missing rights for subscription rules",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Fault"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "hereunder fault datatype description <br>  Reason -  500 Internal error <br>  Code - SUB_ERR Description - Subscription service unavailable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Fault"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "oAuth2": [
+              "subscriptionrule:read:be"
+            ]
+          }
+        ]
+      }
     }
   },
   "components": {
@@ -509,7 +763,9 @@
             "tokenUrl": "https://auth.cma-cgm.com/as/token.oauth2",
             "scopes": {
               "tandtcommercial:read:be": "read access for private enpoints",
-              "tandtpublic:read:be": "read access for public enpoints"
+              "tandtpublic:read:be": "read access for public enpoints",
+              "subscriptionrule:read:be": "read access",
+              "subscriptionrule:write:be": "write access"
             }
           }
         }
@@ -521,6 +777,178 @@
       }
     },
     "schemas": {
+      "SubscriptionRule": {
+        "type": "object",
+        "properties": {
+          "equipmentReferences": {
+            "description": "List of equipment references",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "The unique identifier for the equipment, which should follow the BIC ISO Container Identification Number where possible."
+            }
+          },
+          "vas": {
+            "description": "List of vas",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "Value Added Services."
+            }
+          },
+          "shipmentReferences": {
+            "description": "List of shipment references",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "CMA CGM shipment reference"
+            }
+          },
+          "contractReferences": {
+            "description": "List of contract references",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "CMA CGM quotation / US contract reference"
+            }
+          },
+          "cvsServices": {
+            "description": "<br> List of (serviceCode only OR serviceCode + shippingCompany) OR carrierServiceCode to create.</br>\nEither serviceCode OR carrierServiceCode should be set per cvs service rule.</br>\nIf serviceCode only is provided => the subscription will be applied to the service code only.\nIf serviceCode + shippingCompany is provided => the subscription will be applied to the carrier service code of the specified shippingCompany.\nIf carrierServiceCode is provided => the subscription will be applied to the carrier service code.\n",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CvsService"
+            }
+          },
+          "electronicChannel": {
+            "description": "Dedicated channel where the booking request is submitted, allowed values -> API, WEB, INTTRA_ACT, INTTRA_LINK",
+            "type": "string"
+          },
+          "startDate": {
+            "description": "Start date of the subscription. By default, today",
+            "format": "date",
+            "type": "string"
+          },
+          "endDate": {
+            "description": "End date of the subscription. By default, today + 120 days / today + 365 days for electronic channel",
+            "format": "date",
+            "type": "string"
+          }
+        }
+      },
+      "CvsService": {
+        "type": "object",
+        "properties": {
+          "serviceCode": {
+            "description": "Service code of voyage",
+            "type": "string",
+            "example": "FAL"
+          },
+          "carrierServiceCode": {
+            "description": "Service code for a shipping company",
+            "type": "string",
+            "example": "FALCNC"
+          },
+          "shippingCompany": {
+            "description": "Shipping company code",
+            "type": "string",
+            "example": "0001"
+          },
+          "serviceStartDate": {
+            "description": "Start date of the service subscription. By default, today",
+            "format": "date",
+            "type": "string"
+          },
+          "serviceEndDate": {
+            "description": "End date of the service subscription. By default, today + 1 year",
+            "format": "date",
+            "type": "string"
+          }
+        }
+      },
+      "SubscriptionRuleToDelete": {
+        "type": "object",
+        "properties": {
+          "cvsServicesToDelete": {
+            "description": "<br> List of (serviceCode only OR serviceCode + shippingCompany) OR carrierServiceCode to delete.</br>\nEither serviceCode OR carrierServiceCode should be set per cvs service rule.</br>\nIf serviceCode only is provided => the unsubscription will be applied to the service code only.\nIf serviceCode + shippingCompany is provided => the unsubscription will be applied to the carrier service code of the specified shippingCompany.\nIf carrierServiceCode is provided => the unsubscription will be applied to the carrier service code.\n",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CvsServiceToDelete"
+            }
+          },
+          "equipmentReferences": {
+            "description": "List of equipment references",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "The unique identifier for the equipment, which should follow the BIC ISO Container Identification Number where possible."
+            }
+          },
+          "shipmentReferences": {
+            "description": "List of shipment references",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "CMA CGM shipment reference"
+            }
+          },
+          "contractReferences": {
+            "description": "List of contract references",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "CMA CGM quotation / US contract reference"
+            }
+          },
+          "electronicChannels": {
+            "description": "List of Dedicated channels",
+            "type": "array",
+            "items": {
+              "type": "string",
+              "description": "Dedicated channel where the booking request is submitted, allowed values -> API, WEB, INTTRA_ACT, INTTRA_LINK"
+            }
+          }
+        }
+      },
+      "CvsServiceToDelete": {
+        "type": "object",
+        "properties": {
+          "serviceCode": {
+            "description": "Service code to delete",
+            "type": "string",
+            "example": "FAL"
+          },
+          "carrierServiceCode": {
+            "description": "Service code for a shipping company to delete",
+            "type": "string",
+            "example": "FALCNC"
+          },
+          "shippingCompany": {
+            "description": "Shipping company code",
+            "type": "string",
+            "example": "0001"
+          }
+        }
+      },
+      "Fault": {
+        "type": "object",
+        "required": [
+          "reason"
+        ],
+        "properties": {
+          "reason": {
+            "type": "string",
+            "description": "HTTP error or Free text such as  Database Not Available , Invalid Credential, Mandatory, Invalid Format,  Invalid Length, ForbiddenValue, Invalid Data,..."
+          },
+          "code": {
+            "type": "string",
+            "description": "Error Id,  Server Application error ID, Oracle error Id, ...."
+          },
+          "description": {
+            "type": "string",
+            "description": "Human-readable error description including Data and Value"
+          }
+        }
+      },
       "carrierBookingReference": {
         "maxLength": 35,
         "type": "string",
