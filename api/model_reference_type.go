@@ -20,14 +20,15 @@ type ReferenceType string
 
 // List of referenceType
 const (
-	REF_FF   ReferenceType = "FF"
-	REF_SI   ReferenceType = "SI"
-	REF_PO   ReferenceType = "PO"
-	REF_CR   ReferenceType = "CR"
-	REF_AAO  ReferenceType = "AAO"
-	REF_EQ   ReferenceType = "EQ"
-	REF_LOAD ReferenceType = "LOAD"
-	REF_ERT  ReferenceType = "ERT"
+	REF_FF     ReferenceType = "FF"
+	REF_SI     ReferenceType = "SI"
+	REF_PO     ReferenceType = "PO"
+	REF_CR     ReferenceType = "CR"
+	REF_AAO    ReferenceType = "AAO"
+	REF_EQ     ReferenceType = "EQ"
+	REF_LOAD   ReferenceType = "LOAD"
+	REF_ERT    ReferenceType = "ERT"
+	REF_3_PID ReferenceType  = "3PID"
 )
 
 // All allowed values of ReferenceType enum
@@ -40,6 +41,7 @@ var AllowedReferenceTypeEnumValues = []ReferenceType{
 	"EQ",
 	"LOAD",
 	"ERT",
+	"3PID",
 }
 
 func (v *ReferenceType) UnmarshalJSON(src []byte) error {
