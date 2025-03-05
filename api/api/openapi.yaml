@@ -1304,6 +1304,7 @@ components:
       - EQ
       - LOAD
       - ERT
+      - 3PID
       example: FF
       type: string
     referenceValue:
