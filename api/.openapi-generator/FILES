@@ -4,6 +4,7 @@
 README.md
 api/openapi.yaml
 api_events.go
+api_subscription_rules.go
 client.go
 configuration.go
 docs/Address.md
@@ -48,6 +49,8 @@ docs/BaseTransportEventAllOf4.md
 docs/BaseTransportEventAllOf5.md
 docs/CarrierSpecificData.md
 docs/CustomsReferences.md
+docs/CvsService.md
+docs/CvsServiceToDelete.md
 docs/DocumentReferencesInner.md
 docs/DocumentTypeCode.md
 docs/EmptyIndicatorCode.md
@@ -56,6 +59,7 @@ docs/EquipmentEventTypeCode.md
 docs/EventsApi.md
 docs/FacilityCodeListProvider.md
 docs/FacilityTypeCodeTRN.md
+docs/Fault.md
 docs/InlineResponseDefault.md
 docs/InlineResponseDefaultAllOf.md
 docs/InlineResponseDefaultAllOf1.md
@@ -83,6 +87,9 @@ docs/SearchMoveOnCommercialCycle200ResponseInner.md
 docs/ShipmentEvent.md
 docs/ShipmentEventTypeCode.md
 docs/SubErrorsInner.md
+docs/SubscriptionRule.md
+docs/SubscriptionRuleToDelete.md
+docs/SubscriptionRulesApi.md
 docs/TransportCall.md
 docs/TransportCallAllOf.md
 docs/TransportCallAllOf1.md
@@ -155,6 +162,8 @@ model_base_transport_event_all_of_4.go
 model_base_transport_event_all_of_5.go
 model_carrier_specific_data.go
 model_customs_references.go
+model_cvs_service.go
+model_cvs_service_to_delete.go
 model_document_references_inner.go
 model_document_type_code.go
 model_empty_indicator_code.go
@@ -163,6 +172,7 @@ model_equipment_event_type_code.go
 model_error.go
 model_facility_code_list_provider.go
 model_facility_type_code_trn.go
+model_fault.go
 model_inline_response_default.go
 model_inline_response_default_all_of.go
 model_inline_response_default_all_of_1.go
@@ -189,6 +199,8 @@ model_search_move_on_commercial_cycle_200_response_inner.go
 model_shipment_event.go
 model_shipment_event_type_code.go
 model_sub_errors_inner.go
+model_subscription_rule.go
+model_subscription_rule_to_delete.go
 model_transport_call.go
 model_transport_call_all_of.go
 model_transport_call_all_of_1.go
