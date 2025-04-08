@@ -50,6 +50,8 @@ type APIClient struct {
 	// API Services
 
 	EventsApi EventsApi
+
+	SubscriptionRulesApi SubscriptionRulesApi
 }
 
 type service struct {
@@ -69,6 +71,7 @@ func NewAPIClient(cfg *Configuration) *APIClient {
 
 	// API Services
 	c.EventsApi = (*EventsApiService)(&c.common)
+	c.SubscriptionRulesApi = (*SubscriptionRulesApiService)(&c.common)
 
 	return c
 }
@@ -92,10 +95,6 @@ func selectHeaderContentType(contentTypes []string) string {
 func selectHeaderAccept(accepts []string) string {
 	if len(accepts) == 0 {
 		return ""
-	}
-
-	if contains(accepts, "application/json") {
-		return "application/json"
 	}
 
 	return strings.Join(accepts, ",")

@@ -125,7 +125,7 @@ func (a *EventsApiService) GetMoveOnCommercialCycleExecute(r ApiGetMoveOnCommerc
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/events/{trackingReference}"
+	localVarPath := localBasePath + "/operation/trackandtrace/v1/events/{trackingReference}"
 	localVarPath = strings.Replace(localVarPath, "{"+"trackingReference"+"}", url.PathEscape(parameterToString(r.trackingReference, "")), -1)
 
 	localVarHeaderParams := make(map[string]string)
@@ -386,7 +386,7 @@ func (a *EventsApiService) SearchMoveOnCommercialCycleExecute(r ApiSearchMoveOnC
 		return localVarReturnValue, nil, &GenericOpenAPIError{error: err.Error()}
 	}
 
-	localVarPath := localBasePath + "/events"
+	localVarPath := localBasePath + "/operation/trackandtrace/v1/events"
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := url.Values{}
