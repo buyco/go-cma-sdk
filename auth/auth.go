@@ -2,7 +2,8 @@ package auth
 
 import (
 	"context"
-	"golang.org/x/xerrors"
+	"errors"
+	"fmt"
 	"time"
 )
 
@@ -53,11 +54,11 @@ func (a Client) Token(ctx context.Context) (string, time.Duration, error) {
 		return "", 0, err
 	}
 	if r.IsError() {
-		return "", 0, xerrors.New(errRes.Error)
+		return "", 0, errors.New(errRes.Error)
 	} else if r.IsSuccess() {
 		return result.AccessToken, time.Duration(result.ExpiresIn) * time.Second, nil
 	}
-	return "", 0, xerrors.Errorf("unknown error. status code %d; body: %s", r.GetStatusCode(), r.String())
+	return "", 0, fmt.Errorf("unknown error. status code %d; body: %s", r.GetStatusCode(), r.String())
 }
 
 func (a Client) buildParams() map[string]string {
